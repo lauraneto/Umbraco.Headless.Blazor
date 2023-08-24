@@ -9,8 +9,20 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="MudBlazor" Version="6.0.13" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="NSwag.ApiDescription.Client" Version="13.18.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<OpenApiReference Include="..\umbraco-swagger.json" CodeGenerator="NSwagCSharp" Namespace="UmbracoDemo.Client" Options="/GenerateClientInterfaces:true /GenerateNullableReferenceTypes:true /GenerateOptionalParameters:true /JsonLibrary:SystemTextJson" ClassName="UmbracoApi" Link="OpenAPIs\umbraco-swagger.json" />
+	</ItemGroup>
 	
 </Project>
