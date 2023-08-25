@@ -1,5 +1,15 @@
-﻿<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Fetch data</MudNavLink>
-</MudNavMenu>
+﻿<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Link="/" />
+<MudSpacer />
+<MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+    <MudLink Color="Color.Inherit" Href="" Match="NavLinkMatch.All" Class="mx-8">Home</MudLink>
+    <MudLink Color="Color.Inherit" Href="counter" Match="NavLinkMatch.Prefix" Class="mx-8">Counter</MudLink>
+    <MudLink Color="Color.Inherit" Href="fetchdata" Match="NavLinkMatch.Prefix" Class="mx-8">Fetch data</MudLink>
+</MudHidden>
+<MudSpacer />
+<MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
+    <MudMenu Label="Open Menu" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit">
+        <MudMenuItem Color="Color.Inherit" Href="" Match="NavLinkMatch.All">Home</MudMenuItem>
+        <MudMenuItem Color="Color.Inherit" Href="counter" Match="NavLinkMatch.Prefix">Counter</MudMenuItem>
+        <MudMenuItem Color="Color.Inherit" Href="fetchdata" Match="NavLinkMatch.Prefix">Fetch data</MudMenuItem>
+    </MudMenu>
+</MudHidden>

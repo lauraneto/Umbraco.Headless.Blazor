@@ -1,1 +1,1 @@
-# Umbraco.ContentDeliveryApi.Demo
+﻿# Umbraco.Headless.Blazor 🤯
