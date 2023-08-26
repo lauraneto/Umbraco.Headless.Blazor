@@ -2,25 +2,33 @@
 @using UmbracoDemo.Client.Clients
 @using UmbracoDemo.Client.Models.Pages.Abstractions
 @using System.Collections.Concurrent
+@using UmbracoDemo.Client.Models.Pages
 
-@if (_loading)
-{
-    <MudText Typo="Typo.h6" GutterBottom="true">Loading...</MudText>
-}
-else if (Page != null && GetPageType(Page) is { } pageType)
-{
-    <PageTitle>@(Page?.Name) - Headless Demo</PageTitle>
+<MudAppBar Elevation="0">
+    <NavMenu Links="@(Settings?.HeaderLinks)" />
+</MudAppBar>
+<MudMainContent>
+    <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+        @if (_loading)
+        {
+            <MudText Typo="Typo.h6" GutterBottom="true">Loading...</MudText>
+        }
+        else if (Page != null && GetPageType(Page) is { } pageType)
+        {
+            <PageTitle>@(Page?.Name) - Headless Demo</PageTitle>
 
-    <DynamicComponent Type="@pageType" Parameters="@(new Dictionary<string, object?> { ["Page"] = Page })" />
-}
-else
-{
-    <PageTitle>404 - Headless Demo</PageTitle>
+            <DynamicComponent Type="@pageType" Parameters="@(new Dictionary<string, object?> { ["Page"] = Page })" />
+        }
+        else
+        {
+            <PageTitle>404 - Headless Demo</PageTitle>
 
-    <MudText Typo="Typo.h1" GutterBottom="true">404 - Not Found</MudText>
+            <MudText Typo="Typo.h1" GutterBottom="true">404 - Not Found</MudText>
 
-    <MudText Typo="Typo.body1" GutterBottom="true">Unfortunately I couldn't find what you are looking for 😔</MudText>
-}
+            <MudText Typo="Typo.body1" GutterBottom="true">Unfortunately I couldn't find what you are looking for 😔</MudText>
+        }
+    </MudContainer>
+</MudMainContent>
 
 @code {
     [Parameter]
@@ -31,11 +39,22 @@ else
 
     public BasePage? Page { get; set; }
 
+    public Settings? Settings { get; set; }
+
     private bool _loading = true;
+
+    private string? _previousCulture = null;
 
     protected override async Task OnParametersSetAsync()
     {
         Page = await UmbracoClient.GetContentByPath($"/{Slug}");
+
+        if (Settings == null || (Page != null && _previousCulture != Page.Culture))
+        {
+            Settings = await UmbracoClient.GetContentSingleByType<Settings>(Page?.Culture ?? "en-US");
+            _previousCulture = Page?.Culture;
+        }
+
         _loading = false;
     }
 

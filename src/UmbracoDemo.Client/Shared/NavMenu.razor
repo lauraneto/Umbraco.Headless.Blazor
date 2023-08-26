@@ -1,15 +1,24 @@
-﻿<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Link="/" />
+﻿@using UmbracoDemo.Client.Models.DataTypes
+<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Link="/" />
 <MudSpacer />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-    <MudLink Color="Color.Inherit" Href="" Match="NavLinkMatch.All" Class="mx-8">Home</MudLink>
-    <MudLink Color="Color.Inherit" Href="about" Match="NavLinkMatch.Prefix" Class="mx-8">About</MudLink>
-    <MudLink Color="Color.Inherit" Href="blog" Match="NavLinkMatch.Prefix" Class="mx-8">Blog</MudLink>
+    @foreach (var link in Links ?? Enumerable.Empty<Link>())
+    {
+        <MudLink Color="Color.Inherit" Href="@(link.Url ?? link.Route?.Path)" Match="NavLinkMatch.Prefix" Class="mx-8">@link.Title</MudLink>
+    }
 </MudHidden>
 <MudSpacer />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
     <MudMenu Label="Open Menu" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit">
-        <MudMenuItem Color="Color.Inherit" Href="" Match="NavLinkMatch.All">Home</MudMenuItem>
-        <MudMenuItem Color="Color.Inherit" Href="about" Match="NavLinkMatch.Prefix">About</MudMenuItem>
-        <MudMenuItem Color="Color.Inherit" Href="blog" Match="NavLinkMatch.Prefix">Blog</MudMenuItem>
+        @foreach (var link in Links ?? Enumerable.Empty<Link>())
+        {
+            <MudMenuItem Color="Color.Inherit" Href="@(link.Url ?? link.Route?.Path)" Match="NavLinkMatch.All">@link.Title</MudMenuItem>
+        }
     </MudMenu>
 </MudHidden>
+
+@code
+{
+    [Parameter]
+    public List<Link>? Links { get; set; }
+}

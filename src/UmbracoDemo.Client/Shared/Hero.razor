@@ -1,0 +1,10 @@
+﻿<MudText Typo="Typo.h1" class="pb-5">@Title</MudText>
+<MudText Typo="Typo.subtitle1">@((MarkupString)(Intro ?? ""))</MudText>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Intro { get; set; }
+}
