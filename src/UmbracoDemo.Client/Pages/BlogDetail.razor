@@ -1,0 +1,7 @@
+﻿<MudText Typo="Typo.h1" class="pb-5">@(Page?.Title ?? Page?.Name)</MudText>
+<MudText Typo="Typo.subtitle1">@((MarkupString)(Page?.Intro?.Markup ?? ""))</MudText>
+
+@code {
+    [Parameter]
+    public UmbracoDemo.Client.Models.Pages.BlogDetail? Page { get; set; }
+}

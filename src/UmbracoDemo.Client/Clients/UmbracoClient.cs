@@ -1,8 +1,11 @@
-﻿namespace UmbracoDemo.Client.Clients
+﻿using UmbracoDemo.Client.Helpers;
+using UmbracoDemo.Client.Models.Pages.Abstractions;
+
+namespace UmbracoDemo.Client.Clients
 {
     public interface IUmbracoClient
     {
-        Task<IApiContentResponseModel?> GetPageByPath(string path);
+        Task<BasePage?> GetContentByPath(string path, bool preview = false);
     }
 
     internal class UmbracoClient : IUmbracoClient
@@ -14,11 +17,12 @@
             _umbracoApi = umbracoApi;
         }
 
-        public async Task<IApiContentResponseModel?> GetPageByPath(string path)
+        public async Task<BasePage?> GetContentByPath(string path, bool preview = false)
         {
             try
             {
-                return await _umbracoApi.GetContentItemByPathAsync(path);
+                var response = await _umbracoApi.GetContentItemByPathAsync(path);
+                return response.ConvertToPage(preview);
             }
             catch (ApiException e) when (e.StatusCode == 404)
             {

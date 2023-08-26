@@ -1,9 +1,26 @@
 ﻿@page "/{*slug}"
 @using UmbracoDemo.Client.Clients
+@using UmbracoDemo.Client.Models.Pages.Abstractions
+@using System.Collections.Concurrent
 
-<PageTitle>@(Page?.Name) - Headless Demo</PageTitle>
+@if (_loading)
+{
+    <MudText Typo="Typo.h6" GutterBottom="true">Loading...</MudText>
+}
+else if (Page != null && GetPageType(Page) is { } pageType)
+{
+    <PageTitle>@(Page?.Name) - Headless Demo</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">@(Page?.Name)</MudText>
+    <DynamicComponent Type="@pageType" Parameters="@(new Dictionary<string, object?> { ["Page"] = Page })" />
+}
+else
+{
+    <PageTitle>404 - Headless Demo</PageTitle>
+
+    <MudText Typo="Typo.h1" GutterBottom="true">404 - Not Found</MudText>
+
+    <MudText Typo="Typo.body1" GutterBottom="true">Unfortunately I couldn't find what you are looking for 😔</MudText>
+}
 
 @code {
     [Parameter]
@@ -12,11 +29,21 @@
     [Inject]
     public required IUmbracoClient UmbracoClient { get; set; }
 
-    public IApiContentResponseModel? Page { get; set; }
+    public BasePage? Page { get; set; }
+
+    private bool _loading = true;
 
     protected override async Task OnParametersSetAsync()
     {
-        Page = await UmbracoClient.GetPageByPath($"/{Slug}");
+        Page = await UmbracoClient.GetContentByPath($"/{Slug}");
+        _loading = false;
     }
 
+    private static readonly ConcurrentDictionary<string, Type?> Pages = new();
+    private static Type? GetPageType(BasePage page) =>
+        Pages.GetOrAdd(page.GetType().Name, key =>
+        {
+            var markerType = typeof(Index);
+            return markerType.Assembly.GetType($"{markerType.Namespace}.{key}", false, true);
+        });
 }
