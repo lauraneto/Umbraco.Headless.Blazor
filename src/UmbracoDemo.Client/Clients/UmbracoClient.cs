@@ -12,6 +12,9 @@ namespace UmbracoDemo.Client.Clients
 
         Task<ICollection<BasePage>> GetChildrenByPath(string path, string[]? sort = null, bool preview = false,
             CancellationToken cancellationToken = default);
+
+        Task<(ICollection<BasePage> Pages, long Total)> Search(string query, int skip, int take, string? culture = null, bool preview = false,
+            CancellationToken cancellationToken = default);
     }
 
     internal class UmbracoClient : IUmbracoClient
@@ -58,6 +61,16 @@ namespace UmbracoDemo.Client.Clients
                 .Select(i => i.ConvertToPage(preview))
                 .OfType<BasePage>()
                 .ToList();
+        }
+
+        public async Task<(ICollection<BasePage> Pages, long Total)> Search(string query, int skip, int take, string? culture = null, bool preview = false,
+            CancellationToken cancellationToken = default)
+        {
+            PagedIApiContentResponseModel response = await _umbracoApi.GetContentAsync(filter: new[] { $"name:{query}" }, skip: skip, take: take, accept_Language: culture, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
+            return (response.Items
+                .Select(i => i.ConvertToPage(preview))
+                .OfType<BasePage>()
+                .ToList(), response.Total);
         }
     }
 }

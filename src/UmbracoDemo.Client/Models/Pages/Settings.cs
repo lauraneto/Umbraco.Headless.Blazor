@@ -10,5 +10,7 @@ namespace UmbracoDemo.Client.Models.Pages
         public List<Link>? HomeLink { get; set; }
 
         public List<Link>? HeaderLinks { get; set; }
+
+        public List<Link>? SearchLink { get; set; }
     }
 }

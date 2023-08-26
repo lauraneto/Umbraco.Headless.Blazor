@@ -10,6 +10,7 @@
     }
 </MudHidden>
 <MudSpacer />
+<MudIconButton Icon="@Icons.Material.Outlined.Search" Color="Color.Inherit" Link="@((Settings?.SearchLink?.FirstOrDefault() is {} searchLink ? (searchLink.Url ?? searchLink.Route?.Path) : null) ?? "/")" />
 <LanguagePicker Page="Page" />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
     <MudMenu Label="Open Menu" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit">

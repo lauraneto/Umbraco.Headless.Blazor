@@ -1,0 +1,72 @@
+﻿@using UmbracoDemo.Client.Clients
+@using UmbracoDemo.Client.Models.Pages.Compositions
+<Hero Title="@(Page?.Title ?? Page?.Name)" Intro="@(Page?.Intro?.Markup)" />
+<MudTextField T="string" Placeholder="Ask me anything..." Label="Search" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" DebounceInterval="500" OnDebounceIntervalElapsed="OnQueryUpdated" />
+
+<MudGrid Class="pt-10">
+    @foreach (var result in Results ?? Enumerable.Empty<Models.Pages.Abstractions.BasePage>())
+    {
+        var basePage = result as ICompositionBasePage;
+        <MudItem xs="12" Class="py-4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">@(basePage?.Title ?? result.Name)</MudText>
+                    <MudText Typo="Typo.body2" Class="line-clamp-3">@((MarkupString)(basePage?.Intro?.Markup ?? ""))</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Href="@result.Path" Variant="Variant.Text" Color="Color.Transparent" EndIcon="@Icons.Material.Filled.ArrowRight">Read more</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+
+    <MudPagination Count="TotalPages" Selected="CurrentPage" SelectedChanged="OnPageChanged" />
+</MudGrid>
+
+@code {
+    [Parameter]
+    public UmbracoDemo.Client.Models.Pages.SearchPage? Page { get; set; }
+
+    [Inject]
+    public IUmbracoClient UmbracoClient { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    private ICollection<Models.Pages.Abstractions.BasePage>? Results { get; set; }
+
+    [CascadingParameter]
+    public Index Index { get; set; }
+
+    private int TotalPages { get; set; }
+
+    private int CurrentPage { get; set; }
+
+    public const int ItemsPerPage = 4;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        (Results, long total) = await UmbracoClient.Search(Index.Query ?? "", ((Index.PageNumber ?? 1) - 1) * ItemsPerPage, ItemsPerPage, Page?.Culture);
+        TotalPages = (int)Math.Ceiling((double)total / ItemsPerPage);
+        CurrentPage = Math.Max(1, Math.Min(Index.PageNumber ?? 1, TotalPages));
+    }
+
+    private void OnPageChanged(int newPage)
+    {
+        if (newPage == CurrentPage)
+        {
+            return;
+        }
+
+        NavigationManager.NavigateTo(NavigationManager.GetUriWithQueryParameter("page", newPage));
+    }
+
+    private void OnQueryUpdated(string query)
+    {
+        NavigationManager.NavigateTo(NavigationManager.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            ["query"] = query,
+            ["page"] = null,
+        }));
+    }
+}

@@ -4,59 +4,72 @@
 @using System.Collections.Concurrent
 @using UmbracoDemo.Client.Models.Pages
 
-<MudAppBar Elevation="0">
-    <NavMenu Page="Page" Settings="Settings" />
-</MudAppBar>
-<MudMainContent>
-    <MudContainer MaxWidth="MaxWidth.Medium" Class="my-16 pt-16">
-        @if (_loading)
-        {
-            <MudText Typo="Typo.h6" GutterBottom="true">Loading...</MudText>
-        }
-        else if (Page != null && GetPageType(Page) is { } pageType)
-        {
-            <PageTitle>@(Page?.Name) - Headless Demo</PageTitle>
+<CascadingValue Value="this" IsFixed="true">
+    <MudAppBar Elevation="0">
+        <NavMenu Page="_page" Settings="_settings" />
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="my-16 pt-16">
+            @if (!_loaded)
+            {
+            }
+            else if (_page != null && GetPageType(_page) is { } pageType)
+            {
+                <PageTitle>@(_page.Name) - Headless Demo</PageTitle>
 
-            <DynamicComponent Type="@pageType" Parameters="@(new Dictionary<string, object?> { ["Page"] = Page })" />
-        }
-        else
-        {
-            <PageTitle>404 - Headless Demo</PageTitle>
+                <DynamicComponent Type="@pageType" Parameters="@(new Dictionary<string, object?> { ["Page"] = _page })" />
+            }
+            else
+            {
+                <PageTitle>404 - Headless Demo</PageTitle>
 
-            <MudText Typo="Typo.h1" GutterBottom="true">404 - Not Found</MudText>
+                <MudText Typo="Typo.h1" GutterBottom="true">404 - Not Found</MudText>
 
-            <MudText Typo="Typo.body1" GutterBottom="true">Unfortunately I couldn't find what you are looking for 😔</MudText>
-        }
-    </MudContainer>
-</MudMainContent>
+                <MudText Typo="Typo.body1" GutterBottom="true">Unfortunately I couldn't find what you are looking for 😔</MudText>
+            }
+        </MudContainer>
+    </MudMainContent>
+</CascadingValue>
 
 @code {
     [Parameter]
     public required string Slug { get; set; }
 
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "query")]
+    public string? Query { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "page")]
+    public int? PageNumber { get; set; }
+
     [Inject]
     public required IUmbracoClient UmbracoClient { get; set; }
 
-    public BasePage? Page { get; set; }
-
-    public Settings? Settings { get; set; }
-
-    private bool _loading = true;
-
-    private string? _previousCulture = null;
+    private bool _loaded;
+    private BasePage? _page;
+    private Settings? _settings;
 
     protected override async Task OnParametersSetAsync()
     {
-        Page = await UmbracoClient.GetContentByPath($"/{Slug}");
+        _loaded = false;
 
-        if (Settings == null || (Page != null && _previousCulture != Page.Culture))
+        var slug = $"/{Slug}";
+        if (slug != _page?.Path)
         {
-            Settings = await UmbracoClient.GetContentSingleByType<Settings>(Page?.Culture ?? "en-US");
-            _previousCulture = Page?.Culture;
+            _page = await UmbracoClient.GetContentByPath($"/{Slug}");
         }
 
-        _loading = false;
+        var culture = _page?.Culture ?? "en-US";
+        if (_settings?.Culture != culture)
+        {
+            _settings = await UmbracoClient.GetContentSingleByType<Settings>(culture);
+        }
+
+        _loaded = true;
     }
+
+    protected override bool ShouldRender() => _loaded;
 
     private static readonly ConcurrentDictionary<string, Type?> Pages = new();
     private static Type? GetPageType(BasePage page) =>
