@@ -20,7 +20,7 @@
         </MudItem>
     }
 
-    <MudPagination Count="TotalPages" Selected="CurrentPage" SelectedChanged="OnPageChanged" />
+    <MudPagination Count="_totalPages" Selected="_currentPage" SelectedChanged="OnPageChanged" />
 </MudGrid>
 
 @code {
@@ -28,32 +28,32 @@
     public UmbracoDemo.Client.Models.Pages.SearchPage? Page { get; set; }
 
     [Inject]
-    public IUmbracoClient UmbracoClient { get; set; }
+    public required IUmbracoClient UmbracoClient { get; set; }
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
+    [CascadingParameter(Name = nameof(Query))]
+    public string? Query { get; set; }
+
+    [CascadingParameter(Name = nameof(PageNumber))]
+    public int? PageNumber { get; set; }
+
+    private const int ItemsPerPage = 4;
+    private int _totalPages;
+    private int _currentPage;
     private ICollection<Models.Pages.Abstractions.BasePage>? Results { get; set; }
-
-    [CascadingParameter]
-    public Index Index { get; set; }
-
-    private int TotalPages { get; set; }
-
-    private int CurrentPage { get; set; }
-
-    public const int ItemsPerPage = 4;
 
     protected override async Task OnParametersSetAsync()
     {
-        (Results, long total) = await UmbracoClient.Search(Index.Query ?? "", ((Index.PageNumber ?? 1) - 1) * ItemsPerPage, ItemsPerPage, Page?.Culture);
-        TotalPages = (int)Math.Ceiling((double)total / ItemsPerPage);
-        CurrentPage = Math.Max(1, Math.Min(Index.PageNumber ?? 1, TotalPages));
+        (Results, var total) = await UmbracoClient.Search(Query ?? "", ((PageNumber ?? 1) - 1) * ItemsPerPage, ItemsPerPage, Page?.Culture);
+        _totalPages = (int)Math.Ceiling((double)total / ItemsPerPage);
+        _currentPage = Math.Max(1, Math.Min(PageNumber ?? 1, _totalPages));
     }
 
     private void OnPageChanged(int newPage)
     {
-        if (newPage == CurrentPage)
+        if (newPage == _currentPage)
         {
             return;
         }

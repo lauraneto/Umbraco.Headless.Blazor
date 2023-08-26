@@ -66,7 +66,7 @@ namespace UmbracoDemo.Client.Clients
         public async Task<(ICollection<BasePage> Pages, long Total)> Search(string query, int skip, int take, string? culture = null, bool preview = false,
             CancellationToken cancellationToken = default)
         {
-            PagedIApiContentResponseModel response = await _umbracoApi.GetContentAsync(filter: new[] { $"name:{query}" }, skip: skip, take: take, accept_Language: culture, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
+            PagedIApiContentResponseModel response = await _umbracoApi.GetContentAsync(filter: new[] { $"search:{query}" }, skip: skip, take: take, accept_Language: culture, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
             return (response.Items
                 .Select(i => i.ConvertToPage(preview))
                 .OfType<BasePage>()

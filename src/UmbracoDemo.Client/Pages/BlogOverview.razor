@@ -2,6 +2,16 @@
 <Hero Title="@(Page?.Title ?? Page?.Name)" Intro="@(Page?.Intro?.Markup)" />
 
 <MudGrid >
+    <MudItem xs="12" sm="6" md="4">
+        <MudMenu Label="@(_currentSort?.Label is {} label ? $"Sort: {label}" : "Sort")" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Dark">
+            @foreach (var sortOption in SortOptions)
+            {
+                <MudMenuItem OnClick="(() => OnDropdownItemClicked(sortOption))">@sortOption.Label</MudMenuItem>
+            }
+        </MudMenu>
+    </MudItem>
+</MudGrid>
+<MudGrid >
     @foreach (var child in Children)
     {
         <MudItem xs="12" sm="6" md="4">
@@ -35,10 +45,19 @@
 
     [Inject]
     public required IConfiguration Config { get; set; }
+
+    private static readonly List<SortItem> SortOptions = new()
+    {
+        new SortItem("Date - Desc", "date", "desc"),
+        new SortItem("Date - Asc", "date", "asc"),
+        new SortItem("Popularity", "sortOrder", "asc")
+    };
     
     private string? ApiUrl { get; set; }
 
     private ICollection<UmbracoDemo.Client.Models.Pages.BlogDetail> Children { get; set; } = new List<UmbracoDemo.Client.Models.Pages.BlogDetail>();
+
+    private SortItem? _currentSort = SortOptions[0];
 
     protected override void OnInitialized()
     {
@@ -47,13 +66,42 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        await UpdateChildren();
+    }
+
+    private async Task OnDropdownItemClicked(SortItem currentItem)
+    {
+        if (_currentSort != currentItem)
+        {
+            _currentSort = currentItem;
+            await UpdateChildren();
+        }
+    }
+
+    private async Task UpdateChildren()
+    {
         if (Page == null)
         {
             Children = new List<UmbracoDemo.Client.Models.Pages.BlogDetail>();
             return;
         }
 
-        Children = (await UmbracoClient.GetChildrenByPath(Page.Path)).OfType<UmbracoDemo.Client.Models.Pages.BlogDetail>().ToList();
+        Children = (await UmbracoClient.GetChildrenByPath(Page.Path, sort: _currentSort != null ? new[] { $"{_currentSort.SortName}:{_currentSort.SortOrder}" } : null)).OfType<UmbracoDemo.Client.Models.Pages.BlogDetail>().ToList();
     }
 
+    public class SortItem
+    {
+        public string Label { get; set; }
+
+        public string SortName { get; set; }
+
+        public string SortOrder { get; set; }
+
+        public SortItem(string label, string sortName, string sortOrder)
+        {
+            Label = label;
+            SortName = sortName;
+            SortOrder = sortOrder;
+        }
+    }
 }

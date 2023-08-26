@@ -4,31 +4,33 @@
 @using System.Collections.Concurrent
 @using UmbracoDemo.Client.Models.Pages
 
-<CascadingValue Value="this" IsFixed="true">
-    <MudAppBar Elevation="0">
-        <NavMenu Page="_page" Settings="_settings" />
-    </MudAppBar>
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Medium" Class="my-16 pt-16">
-            @if (!_loaded)
-            {
-            }
-            else if (_page != null && GetPageType(_page) is { } pageType)
-            {
-                <PageTitle>@(_page.Name) - Headless Demo</PageTitle>
+<CascadingValue Name="@nameof(Query)" Value="@Query" IsFixed="true">
+    <CascadingValue Name="@nameof(PageNumber)" Value="@PageNumber" IsFixed="true">
+        <MudAppBar Elevation="0">
+            <NavMenu Page="_page" Settings="_settings"/>
+        </MudAppBar>
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.Medium" Class="my-16 pt-16">
+                @if (!_loaded)
+                {
+                }
+                else if (_page != null && GetPageType(_page) is { } pageType)
+                {
+                    <PageTitle>@(_page.Name) - Headless Demo</PageTitle>
 
-                <DynamicComponent Type="@pageType" Parameters="@(new Dictionary<string, object?> { ["Page"] = _page })" />
-            }
-            else
-            {
-                <PageTitle>404 - Headless Demo</PageTitle>
+                    <DynamicComponent Type="@pageType" Parameters="@(new Dictionary<string, object?> { ["Page"] = _page })"/>
+                }
+                else
+                {
+                    <PageTitle>404 - Headless Demo</PageTitle>
 
-                <MudText Typo="Typo.h1" GutterBottom="true">404 - Not Found</MudText>
+                    <MudText Typo="Typo.h1" GutterBottom="true">404 - Not Found</MudText>
 
-                <MudText Typo="Typo.body1" GutterBottom="true">Unfortunately I couldn't find what you are looking for 😔</MudText>
-            }
-        </MudContainer>
-    </MudMainContent>
+                    <MudText Typo="Typo.body1" GutterBottom="true">Unfortunately I couldn't find what you are looking for 😔</MudText>
+                }
+            </MudContainer>
+        </MudMainContent>
+    </CascadingValue>
 </CascadingValue>
 
 @code {
