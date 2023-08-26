@@ -1,0 +1,13 @@
+﻿@if (Text is null)
+{
+    return;
+}
+
+<MudText>@((MarkupString)Text)</MudText>
+
+@code {
+    [Parameter]
+    public UmbracoDemo.Client.Models.Blocks.TextBlock? Content { get; set; }
+
+    public string? Text => Content?.Properties.Text?.Markup;
+}

@@ -15,5 +15,7 @@ namespace UmbracoDemo.Client.Models.Pages
         public List<Image>? Image { get; set; }
 
         public DateTime? Date { get; set; }
+
+        public BlockList Blocks { get; set; }
     }
 }

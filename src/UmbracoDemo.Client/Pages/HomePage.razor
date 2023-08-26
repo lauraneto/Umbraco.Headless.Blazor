@@ -1,5 +1,9 @@
 ﻿<Hero Title="@(Page?.Title ?? Page?.Name)" Intro="@(Page?.Intro?.Markup)" />
 
+<div>
+    <BlockList Blocks="Page?.Blocks" />
+</div>
+
 @code {
     [Parameter]
     public UmbracoDemo.Client.Models.Pages.HomePage? Page { get; set; }

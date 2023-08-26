@@ -9,5 +9,7 @@ namespace UmbracoDemo.Client.Models.Pages
         public static string ContentTypeAlias => "home__cad";
         public string? Title { get; set; }
         public RichText? Intro { get; set; }
+
+        public BlockList Blocks { get; set; }
     }
 }

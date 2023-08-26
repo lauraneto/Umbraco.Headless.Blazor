@@ -1,0 +1,26 @@
+﻿@using System.Collections.Concurrent
+@using UmbracoDemo.Client.Models.DataTypes
+
+@foreach (var block in Blocks?.Items ?? Enumerable.Empty<BlockListItem>())
+{
+    @if (block.Content != null && GetBlockType(block.Content.GetType()) is { } componentType)
+    {
+           <div class="py-8">
+            <DynamicComponent Type="@componentType" Parameters="@(new Dictionary<string, object?> { ["Content"] = block.Content })" />
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public UmbracoDemo.Client.Models.DataTypes.BlockList? Blocks { get; set; }
+
+    private static readonly ConcurrentDictionary<Type, Type?> Components = new();
+
+    public static Type? GetBlockType(Type contentType) =>
+        Components.GetOrAdd(contentType, key =>
+        {
+            var markerType = typeof(BlockList);
+            return markerType.Assembly.GetType($"{markerType.Namespace}.{key.Name}", false, true);
+        });
+}

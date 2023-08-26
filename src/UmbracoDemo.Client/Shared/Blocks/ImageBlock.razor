@@ -1,0 +1,24 @@
+﻿@using UmbracoDemo.Client.Models.DataTypes
+@if (Image is null)
+{
+    return;
+}
+
+<MudImage Fluid="true" Src="@($"{ApiUrl}{Image.Url}")" Alt="@(Image.Name)" Class="rounded-lg" />
+
+@code {
+    [Parameter]
+    public UmbracoDemo.Client.Models.Blocks.ImageBlock? Content { get; set; }
+
+    [Inject]
+    public required IConfiguration Config { get; set; }
+
+    private string? ApiUrl { get; set; }
+
+    public Image? Image => Content?.Properties.Image?.FirstOrDefault();
+
+    protected override void OnInitialized()
+    {
+        ApiUrl = Config["UmbracoApi:BaseUrl"];
+    }
+}
