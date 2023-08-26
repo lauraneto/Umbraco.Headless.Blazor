@@ -9,6 +9,9 @@ namespace UmbracoDemo.Client.Clients
 
         Task<T?> GetContentSingleByType<T>(string? culture = null, bool preview = false,
             CancellationToken cancellationToken = default) where T : class, IContent, new();
+
+        Task<ICollection<BasePage>> GetChildrenByPath(string path, string[]? sort = null, bool preview = false,
+            CancellationToken cancellationToken = default);
     }
 
     internal class UmbracoClient : IUmbracoClient
@@ -46,6 +49,15 @@ namespace UmbracoDemo.Client.Clients
             {
                 return null;
             }
+        }
+
+        public async Task<ICollection<BasePage>> GetChildrenByPath(string path, string[]? sort = null, bool preview = false, CancellationToken cancellationToken = default)
+        {
+            var response = await _umbracoApi.GetContentAsync(fetch: $"children:{path}", sort: sort ?? new[] { "sortOrder:asc" }, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
+            return response.Items
+                .Select(i => i.ConvertToPage(preview))
+                .OfType<BasePage>()
+                .ToList();
         }
     }
 }
