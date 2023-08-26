@@ -1,16 +1,19 @@
 ﻿@using UmbracoDemo.Client.Models.DataTypes
-<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Link="/" />
+@using UmbracoDemo.Client.Models.Pages
+@using UmbracoDemo.Client.Models.Pages.Abstractions
+<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Link="@((Settings?.HomeLink?.FirstOrDefault() is {} link ? (link.Url ?? link.Route?.Path) : null) ?? "/")" />
 <MudSpacer />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-    @foreach (var link in Links ?? Enumerable.Empty<Link>())
+    @foreach (var link in Settings?.HeaderLinks ?? Enumerable.Empty<Link>())
     {
         <MudLink Color="Color.Inherit" Href="@(link.Url ?? link.Route?.Path)" Match="NavLinkMatch.Prefix" Class="mx-8">@link.Title</MudLink>
     }
 </MudHidden>
 <MudSpacer />
+<LanguagePicker Page="Page" />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
     <MudMenu Label="Open Menu" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit">
-        @foreach (var link in Links ?? Enumerable.Empty<Link>())
+        @foreach (var link in Settings?.HeaderLinks ?? Enumerable.Empty<Link>())
         {
             <MudMenuItem Color="Color.Inherit" Href="@(link.Url ?? link.Route?.Path)" Match="NavLinkMatch.All">@link.Title</MudMenuItem>
         }
@@ -20,5 +23,8 @@
 @code
 {
     [Parameter]
-    public List<Link>? Links { get; set; }
+    public BasePage? Page { get; set; }
+
+    [Parameter]
+    public Settings? Settings { get; set; }
 }

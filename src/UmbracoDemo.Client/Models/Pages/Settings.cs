@@ -7,6 +7,8 @@ namespace UmbracoDemo.Client.Models.Pages
     {
         public static string ContentTypeAlias => "settings__cad";
 
+        public List<Link>? HomeLink { get; set; }
+
         public List<Link>? HeaderLinks { get; set; }
     }
 }

@@ -1,0 +1,23 @@
+﻿@using UmbracoDemo.Client.Models.Pages.Abstractions
+@using System.Globalization
+
+@if (Page?.Cultures is { Count: > 0 })
+{
+    <MudMenu EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Label="@GetFriendlyName(Page?.Culture ?? "en-US")" Color="Color.Transparent" Variant="Variant.Text">
+        @foreach (var culture in Page!.Cultures)
+        {
+            <MudMenuItem Href="@culture.Value">@GetFriendlyName(culture.Key)</MudMenuItem>
+        }
+    </MudMenu>
+}
+
+@code {
+    [Parameter]
+    public BasePage? Page { get; set; }
+
+    private string GetFriendlyName(string culture)
+    {
+        var cultureInfo = new CultureInfo(culture);
+        return (cultureInfo.IsNeutralCulture ? cultureInfo.EnglishName : cultureInfo.Parent.EnglishName).ToUpperInvariant();
+    }
+}

@@ -5,7 +5,7 @@
 @using UmbracoDemo.Client.Models.Pages
 
 <MudAppBar Elevation="0">
-    <NavMenu Links="@(Settings?.HeaderLinks)" />
+    <NavMenu Page="Page" Settings="Settings" />
 </MudAppBar>
 <MudMainContent>
     <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
