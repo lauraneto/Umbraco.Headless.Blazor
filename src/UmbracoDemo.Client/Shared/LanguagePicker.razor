@@ -6,7 +6,7 @@
     <MudMenu EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Label="@GetFriendlyName(Page?.Culture ?? "en-US")" Color="Color.Transparent" Variant="Variant.Text">
         @foreach (var culture in Page!.Cultures)
         {
-            <MudMenuItem Href="@culture.Value">@GetFriendlyName(culture.Key)</MudMenuItem>
+            <MudMenuItem Href="@culture.Value.GetUrl()">@GetFriendlyName(culture.Key)</MudMenuItem>
         }
     </MudMenu>
 }

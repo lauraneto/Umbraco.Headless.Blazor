@@ -29,7 +29,7 @@
                      <MudText Typo="Typo.body2">@((MarkupString)(child.Intro?.Markup ?? ""))</MudText>
                  </MudCardContent>
                  <MudCardActions>
-                     <MudButton Href="@child.Path" Variant="Variant.Text" Color="Color.Transparent" EndIcon="@Icons.Material.Filled.ArrowRight">Read more</MudButton>
+                     <MudButton Href="@child.Route.GetUrl()" Variant="Variant.Text" Color="Color.Transparent" EndIcon="@Icons.Material.Filled.ArrowRight">Read more</MudButton>
                  </MudCardActions>
              </MudCard>
         </MudItem>
@@ -86,7 +86,7 @@
             return;
         }
 
-        Children = (await UmbracoClient.GetChildrenByPath(Page.Path, sort: _currentSort != null ? new[] { $"{_currentSort.SortName}:{_currentSort.SortOrder}" } : null)).OfType<UmbracoDemo.Client.Models.Pages.BlogDetail>().ToList();
+        Children = (await UmbracoClient.GetChildrenByPath(Page.Route.Path, sort: _currentSort != null ? new[] { $"{_currentSort.SortName}:{_currentSort.SortOrder}" } : null)).OfType<UmbracoDemo.Client.Models.Pages.BlogDetail>().ToList();
     }
 
     public class SortItem

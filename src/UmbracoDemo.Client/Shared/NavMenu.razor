@@ -2,23 +2,23 @@
 @using UmbracoDemo.Client.Models.Pages
 @using UmbracoDemo.Client.Models.Pages.Abstractions
 @using UmbracoDemo.Client.Services
-<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Link="@((Settings?.HomeLink?.FirstOrDefault() is {} link ? (link.Url ?? link.Route?.Path) : null) ?? "/")" />
+<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Href="@(Settings?.HomeLink?.FirstOrDefault()?.GetUrl())" HtmlTag="a" />
 <MudSpacer />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
     @foreach (var link in Settings?.HeaderLinks ?? Enumerable.Empty<Link>())
     {
-        <MudLink Color="Color.Inherit" Href="@(link.Url ?? link.Route?.Path)" Match="NavLinkMatch.Prefix" Class="mx-8">@link.Title</MudLink>
+        <MudLink Color="Color.Inherit" Href="@link.GetUrl()" Match="NavLinkMatch.Prefix" Class="mx-8">@link.Title</MudLink>
     }
 </MudHidden>
 <MudSpacer />
 <PreviewToggle OnPreviewToggled="OnPreviewToggled" />
-<MudIconButton Icon="@Icons.Material.Outlined.Search" Color="Color.Inherit" Link="@((Settings?.SearchLink?.FirstOrDefault() is {} searchLink ? (searchLink.Url ?? searchLink.Route?.Path) : null) ?? "/")" />
+<MudIconButton Icon="@Icons.Material.Outlined.Search" Color="Color.Inherit" Link="@(Settings?.SearchLink?.FirstOrDefault()?.GetUrl())" />
 <LanguagePicker Page="Page" />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
     <MudMenu Label="Open Menu" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit">
         @foreach (var link in Settings?.HeaderLinks ?? Enumerable.Empty<Link>())
         {
-            <MudMenuItem Color="Color.Inherit" Href="@(link.Url ?? link.Route?.Path)" Match="NavLinkMatch.All">@link.Title</MudMenuItem>
+            <MudMenuItem Color="Color.Inherit" Href="@link.GetUrl()" Match="NavLinkMatch.All">@link.Title</MudMenuItem>
         }
     </MudMenu>
 </MudHidden>

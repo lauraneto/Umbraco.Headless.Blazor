@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
+using UmbracoDemo.Client.Models;
 using UmbracoDemo.Client.Models.Pages.Abstractions;
 
 namespace UmbracoDemo.Client.Helpers;
@@ -19,10 +20,25 @@ public static class UmbracoApiExtensions
             page.Id = source.Id;
             page.ContentType = source.ContentType;
             page.Name = source.Name;
-            page.StartItem = source.Route.StartItem.Id;
             page.Culture = source.Cultures.FirstOrDefault(c => c.Value.Path == source.Route.Path).Key;
-            page.Cultures = source.Cultures.ToDictionary(c => c.Key, c => c.Value.Path);
-            page.Path = source.Route.Path;
+            page.Cultures = source.Cultures.ToDictionary(c => c.Key, c => new Route
+            {
+                Path = c.Value.Path,
+                StartItem = new StartItem
+                {
+                    Id = c.Value.StartItem.Id,
+                    Path = c.Value.StartItem.Path
+                }
+            });
+            page.Route = new Route
+            {
+                Path = source.Route.Path,
+                StartItem = new StartItem
+                {
+                    Id = source.Route.StartItem.Id,
+                    Path = source.Route.StartItem.Path
+                }
+            };
             page.Preview = preview;
         }
 

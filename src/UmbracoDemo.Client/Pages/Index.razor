@@ -67,7 +67,7 @@
         _loaded = false;
 
         var slug = $"/{Slug}";
-        if (slug != _page?.Path || forceUpdate)
+        if (slug != _page?.Route.Path || forceUpdate)
         {
             _page = await UmbracoClient.GetContentByPath($"/{Slug}");
         }

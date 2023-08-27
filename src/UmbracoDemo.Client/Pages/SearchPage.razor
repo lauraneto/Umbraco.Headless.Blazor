@@ -14,7 +14,7 @@
                     <MudText Typo="Typo.body2" Class="line-clamp-3">@((MarkupString)(basePage?.Intro?.Markup ?? ""))</MudText>
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton Href="@result.Path" Variant="Variant.Text" Color="Color.Transparent" EndIcon="@Icons.Material.Filled.ArrowRight">Read more</MudButton>
+                        <MudButton Href="@result.Route.GetUrl()" Variant="Variant.Text" Color="Color.Transparent" EndIcon="@Icons.Material.Filled.ArrowRight" HtmlTag="a">Read more</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
