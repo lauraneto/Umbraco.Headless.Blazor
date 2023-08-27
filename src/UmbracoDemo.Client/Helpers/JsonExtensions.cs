@@ -1,45 +1,44 @@
 ﻿using System.Text.Json;
 
-namespace UmbracoDemo.Client.Helpers
+namespace UmbracoDemo.Client.Helpers;
+
+public static class JsonExtensions
 {
-    public static class JsonExtensions
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web);
+
+    public static T? GetValue<T>(this object obj)
     {
-        private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web);
+        return obj is JsonElement elem ? elem.Deserialize<T>(JsonSerializerOptions) : default;
+    }
 
-        public static T? GetValue<T>(this object obj)
+    public static object? GetValue(this object obj, Type type)
+    {
+        return obj is JsonElement elem ? elem.Deserialize(type, JsonSerializerOptions) : null;
+    }
+
+    public static T? ToObject<T>(this IDictionary<string, object>? source)
+        where T : class, new()
+    {
+        if (source == null)
         {
-            return obj is JsonElement elem ? elem.Deserialize<T>(JsonSerializerOptions) : default;
+            return null;
         }
 
-        public static object? GetValue(this object obj, Type type)
-        {
-            return obj is JsonElement elem ? elem.Deserialize(type, JsonSerializerOptions) : null;
-        }
+        var caseInsensitiveDict = new Dictionary<string, object>(source, StringComparer.OrdinalIgnoreCase);
+        var someObject = new T();
 
-        public static T? ToObject<T>(this IDictionary<string, object>? source)
-            where T : class, new()
+        foreach (var property in typeof(T).GetProperties())
         {
-            if (source == null)
+            if (caseInsensitiveDict.TryGetValue(property.Name, out var value))
             {
-                return null;
+                property.SetValue(someObject,
+                    property.PropertyType.IsInstanceOfType(value)
+                        ? value
+                        : value.GetValue(property.PropertyType),
+                    null);
             }
-
-            var caseInsensitiveDict = new Dictionary<string, object>(source, StringComparer.OrdinalIgnoreCase);
-            var someObject = new T();
-
-            foreach (var property in typeof(T).GetProperties())
-            {
-                if (caseInsensitiveDict.TryGetValue(property.Name, out var value))
-                {
-                    property.SetValue(someObject,
-                        property.PropertyType.IsInstanceOfType(value)
-                            ? value
-                            : value.GetValue(property.PropertyType),
-                        null);
-                }
-            }
-
-            return someObject;
         }
+
+        return someObject;
     }
 }

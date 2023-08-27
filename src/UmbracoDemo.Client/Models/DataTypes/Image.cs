@@ -1,11 +1,10 @@
-﻿namespace UmbracoDemo.Client.Models.DataTypes
+﻿namespace UmbracoDemo.Client.Models.DataTypes;
+
+public class Image
 {
-    public class Image
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public required string Name { get; set; }
+    public required string Name { get; set; }
 
-        public required string Url { get; set; }
-    }
+    public required string Url { get; set; }
 }

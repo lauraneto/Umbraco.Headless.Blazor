@@ -1,7 +1,6 @@
-﻿namespace UmbracoDemo.Client.Models.Pages.Abstractions
+﻿namespace UmbracoDemo.Client.Models.Pages.Abstractions;
+
+public interface IContent
 {
-    public interface IContent
-    {
-        public static abstract string ContentTypeAlias { get; }
-    }
+    public static abstract string ContentTypeAlias { get; }
 }
