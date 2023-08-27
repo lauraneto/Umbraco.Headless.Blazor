@@ -10,8 +10,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
 builder.Services
     .AddScoped<IPreviewService, PreviewService>()
     .AddTransient<IUmbracoClient, UmbracoClient>()
@@ -19,7 +17,7 @@ builder.Services
     (client, sp) =>
     {
         var config = sp.GetRequiredService<IConfiguration>();
-        return new UmbracoApi(config["UmbracoApi:BaseUrl"], client);
+        return new UmbracoApi(config["UmbracoApi:BaseUrl"] ?? throw new InvalidOperationException("Umbraco API url is not set."), client);
     });
 
 builder.Services
