@@ -11,7 +11,13 @@ It was built as a POC/demo to test the capabilities of the new API, and make it 
 - `UmbracoDemo.CMS` - A sample Umbraco 12 CMS application with the Content Delivery API enabled.
 	- `Custom` folder - Includes the custom code built to extend the Content Delivery API.
 	
-## Try it out locally
+## Try it out
+
+### Demo
+
+https://lauraneto.github.io/Umbraco.Headless.Blazor/
+
+### Locally
 
 You can try out the sample applications by following these steps:
 

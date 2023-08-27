@@ -3,19 +3,19 @@
 
 <MudGrid >
     <MudItem xs="12" sm="6" md="4">
-        <MudMenu Label="@(_currentSort?.Label is {} label ? $"Sort: {label}" : "Sort")" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Dark">
+        <MudSelect T="SortItem" Label="Sort" Value="@_currentSort" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" ValueChanged="OnDropdownItemClicked">
             @foreach (var sortOption in SortOptions)
             {
-                <MudMenuItem OnClick="(() => OnDropdownItemClicked(sortOption))">@sortOption.Label</MudMenuItem>
+                <MudSelectItem Value="sortOption">@sortOption.Label</MudSelectItem>
             }
-        </MudMenu>
+        </MudSelect>
     </MudItem>
 </MudGrid>
 <MudGrid >
     @foreach (var child in Children)
     {
-        <MudItem xs="12" sm="6" md="4">
-             <MudCard>
+        <MudItem @key="child.Id" xs="12" sm="6" md="4">
+             <MudCard Style="display: flex; flex-direction: column; min-height: 100%;">
                  @{
                      var image = child.Image?.FirstOrDefault();
                      var imageUrl = image == null
@@ -23,7 +23,7 @@
                          : $"{ApiUrl}{image.Url}?width=400&height=270";
                  }
                  <MudCardMedia Image="@imageUrl" Height="200" />
-                 <MudCardContent>
+                 <MudCardContent Style="flex: auto;">
                      <MudText Typo="Typo.h5">@(child.Title ?? child.Name)</MudText>
                      <MudText Typo="Typo.body2" Class="py-2">Date: @(child.Date?.ToString("dd MMMM yyyy"))</MudText>
                      <MudText Typo="Typo.body2">@((MarkupString)(child.Intro?.Markup ?? ""))</MudText>
@@ -48,8 +48,8 @@
 
     private static readonly List<SortItem> SortOptions = new()
     {
-        new SortItem("Date - Desc", "date", "desc"),
-        new SortItem("Date - Asc", "date", "asc"),
+        new SortItem("Date - Descending", "date", "desc"),
+        new SortItem("Date - Ascending", "date", "asc"),
         new SortItem("Popularity", "sortOrder", "asc")
     };
     
