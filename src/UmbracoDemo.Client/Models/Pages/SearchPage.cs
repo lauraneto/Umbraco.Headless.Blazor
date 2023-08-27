@@ -6,7 +6,7 @@ namespace UmbracoDemo.Client.Models.Pages;
 
 public class SearchPage : BasePage, IContent, ICompositionBasePage
 {
-    public static string ContentTypeAlias => "searchPage__cad";
+    public static string ContentTypeAlias => "pageSearch__cad";
 
     public string? Title { get; set; }
 

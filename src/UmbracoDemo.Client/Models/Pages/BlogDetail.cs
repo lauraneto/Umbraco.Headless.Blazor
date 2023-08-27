@@ -6,7 +6,7 @@ namespace UmbracoDemo.Client.Models.Pages;
 
 public class BlogDetail : BasePage, IContent, ICompositionBasePage
 {
-    public static string ContentTypeAlias => "blogDetail__cad";
+    public static string ContentTypeAlias => "pageBlogDetail__cad";
 
     public string? Title { get; set; }
 

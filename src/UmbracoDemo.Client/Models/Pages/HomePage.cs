@@ -6,7 +6,7 @@ namespace UmbracoDemo.Client.Models.Pages;
 
 public class HomePage : BasePage, IContent, ICompositionBasePage
 {
-    public static string ContentTypeAlias => "homePage__cad";
+    public static string ContentTypeAlias => "pageHome__cad";
     public string? Title { get; set; }
     public RichText? Intro { get; set; }
 

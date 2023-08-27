@@ -72,11 +72,15 @@ internal class UmbracoClient : IUmbracoClient
             .ToList();
     }
 
-    public async Task<(ICollection<BasePage> Pages, long Total)> Search(string query, int skip, int take, string? culture = null,
+    public async Task<(ICollection<BasePage> Pages, long Total)> Search(
+        string query,
+        int skip,
+        int take,
+        string? culture = null,
         CancellationToken cancellationToken = default)
     {
         bool preview = await _previewService.GetPreview();
-        PagedIApiContentResponseModel response = await _umbracoApi.GetContentAsync(filter: new[] { $"search:{query}" }, skip: skip, take: take, accept_Language: culture, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
+        PagedIApiContentResponseModel response = await _umbracoApi.GetContentAsync(filter: new[] { $"search:{query}", "hideFromSearch:false" }, skip: skip, take: take, accept_Language: culture, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
         return (response.Items
             .Select(i => i.ConvertToPage(preview))
             .OfType<BasePage>()
