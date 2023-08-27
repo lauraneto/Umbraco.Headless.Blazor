@@ -4,7 +4,11 @@
     return;
 }
 
-<MudImage Fluid="true" Src="@($"{ApiUrl}{Image.Url}")" Alt="@(Image.Name)" Class="rounded-lg" />
+<MudGrid Justify="Justify.Center">
+    <MudItem>
+        <MudImage Fluid="true" Src="@($"{ApiUrl}{Image.Url}")" Alt="@(Image.Name)" Class="rounded-lg" />
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter]

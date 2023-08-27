@@ -3,11 +3,12 @@
 @using UmbracoDemo.Client.Models.Pages.Abstractions
 @using System.Collections.Concurrent
 @using UmbracoDemo.Client.Models.Pages
+@using UmbracoDemo.Client.Services
 
 <CascadingValue Name="@nameof(Query)" Value="@Query" IsFixed="true">
     <CascadingValue Name="@nameof(PageNumber)" Value="@PageNumber" IsFixed="true">
         <MudAppBar Elevation="0">
-            <NavMenu Page="_page" Settings="_settings"/>
+            <NavMenu Page="_page" Settings="_settings" OnPreviewToggled="@(() => UpdatePage(true))" />
         </MudAppBar>
         <MudMainContent>
             <MudContainer MaxWidth="MaxWidth.Medium" Class="my-16 pt-16">
@@ -48,26 +49,35 @@
     [Inject]
     public required IUmbracoClient UmbracoClient { get; set; }
 
+    [Inject]
+    public required IPreviewService PreviewService { get; set; }
+
     private bool _loaded;
     private BasePage? _page;
     private Settings? _settings;
+    private bool _previewEnabled;
 
     protected override async Task OnParametersSetAsync()
+    {
+        await UpdatePage();
+    }
+
+    private async Task UpdatePage(bool forceUpdate = false)
     {
         _loaded = false;
 
         var slug = $"/{Slug}";
-        if (slug != _page?.Path)
+        if (slug != _page?.Path || forceUpdate)
         {
             _page = await UmbracoClient.GetContentByPath($"/{Slug}");
         }
 
         var culture = _page?.Culture ?? "en-US";
-        if (_settings?.Culture != culture)
+        if (_settings?.Culture != culture || forceUpdate)
         {
             _settings = await UmbracoClient.GetContentSingleByType<Settings>(culture);
         }
-
+        
         _loaded = true;
     }
 

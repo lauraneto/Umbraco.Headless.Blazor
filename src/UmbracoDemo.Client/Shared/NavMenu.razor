@@ -1,6 +1,7 @@
 ﻿@using UmbracoDemo.Client.Models.DataTypes
 @using UmbracoDemo.Client.Models.Pages
 @using UmbracoDemo.Client.Models.Pages.Abstractions
+@using UmbracoDemo.Client.Services
 <MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Link="@((Settings?.HomeLink?.FirstOrDefault() is {} link ? (link.Url ?? link.Route?.Path) : null) ?? "/")" />
 <MudSpacer />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
@@ -10,6 +11,7 @@
     }
 </MudHidden>
 <MudSpacer />
+<PreviewToggle OnPreviewToggled="OnPreviewToggled" />
 <MudIconButton Icon="@Icons.Material.Outlined.Search" Color="Color.Inherit" Link="@((Settings?.SearchLink?.FirstOrDefault() is {} searchLink ? (searchLink.Url ?? searchLink.Route?.Path) : null) ?? "/")" />
 <LanguagePicker Page="Page" />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
@@ -28,4 +30,7 @@
 
     [Parameter]
     public Settings? Settings { get; set; }
+
+    [Parameter]
+    public EventCallback OnPreviewToggled { get; set; }
 }

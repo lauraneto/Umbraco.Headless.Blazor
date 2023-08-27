@@ -1,0 +1,24 @@
+﻿@using UmbracoDemo.Client.Services
+<MudSwitch Checked="_previewEnabled" T="bool" CheckedChanged="OnPreviewChanged" Color="Color.Secondary" LabelPosition="LabelPosition.Start">Preview</MudSwitch>
+
+@code {
+    [Parameter]
+    public EventCallback OnPreviewToggled { get; set; }
+
+    [Inject]
+    public required IPreviewService PreviewService { get; set; }
+
+    private bool _previewEnabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _previewEnabled = await PreviewService.GetPreview();
+    }
+    
+    private async Task OnPreviewChanged(bool newValue)
+    {
+        _previewEnabled = newValue;
+        await PreviewService.UpdatePreview(newValue);
+        await OnPreviewToggled.InvokeAsync();
+    }
+}
