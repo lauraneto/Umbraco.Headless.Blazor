@@ -39,6 +39,17 @@ public class Startup
             .AddDeliveryApi()
             .AddComposers()
             .Build();
+
+        // Set up CORS
+        services.AddCors(options => options.AddDefaultPolicy(builder => builder
+            .WithOrigins("https://localhost:44398")
+            .WithHeaders("Preview", "Api-Key")));
+
+        // Workaround for the fact that using System.Text.Json the type discriminator needs to be the first property!
+        services.AddControllers().AddJsonOptions(Constants.JsonOptionsNames.DeliveryApi, options =>
+        {
+            options.JsonSerializerOptions.TypeInfoResolver = new CustomDeliveryApiJsonTypeResolver();
+        });
     }
 
     /// <summary>
