@@ -12,5 +12,8 @@ appsettings-schema.*.json
 # Temp folder containing Examine indexes, NuCache, MediaCache, etc.
 /umbraco/Data/TEMP/
 
+# SQLite database files
+/umbraco/Data/*.sqlite.db-shm
+
 # Log files
 /umbraco/Logs/
