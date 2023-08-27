@@ -42,7 +42,7 @@ public class Startup
 
         // Set up CORS
         services.AddCors(options => options.AddDefaultPolicy(builder => builder
-            .WithOrigins("https://localhost:44398")
+            .WithOrigins("https://localhost:44398", "https://localhost:5001")
             .WithHeaders("Preview", "Api-Key")));
 
         // Workaround for the fact that using System.Text.Json the type discriminator needs to be the first property!
