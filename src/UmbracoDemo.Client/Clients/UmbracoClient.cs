@@ -42,8 +42,8 @@ internal class UmbracoClient : IUmbracoClient
         try
         {
             bool preview = await _previewService.GetPreview();
-            var response = await _umbracoApi.GetContentItemByPathAsync(path, preview: preview, api_Key: preview ? _apiKey : null);
-            return response.ConvertToPage(preview);
+            var response = await _umbracoApi.GetContentItemByPathAsync(path, expand: "property:relatedBlogs", preview: preview, api_Key: preview ? _apiKey : null);
+            return response.ConvertToPage();
         }
         catch (ApiException e) when (e.StatusCode == 404)
         {
@@ -57,7 +57,7 @@ internal class UmbracoClient : IUmbracoClient
         {
             bool preview = await _previewService.GetPreview();
             var response = await _umbracoApi.GetContentAsync(filter: new[] { $"contentType:{T.ContentTypeAlias}" }, take: 1, accept_Language: culture, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
-            return response.Items.FirstOrDefault()?.ToContent<T>(preview);
+            return response.Items.FirstOrDefault()?.ToContent<T>();
         }
         catch (ApiException e) when (e.StatusCode == 404)
         {
@@ -70,7 +70,7 @@ internal class UmbracoClient : IUmbracoClient
         bool preview = await _previewService.GetPreview();
         var response = await _umbracoApi.GetContentAsync(fetch: $"children:{path}", filter: filter ?? Enumerable.Empty<string>(), sort: sort ?? new[] { "sortOrder:asc" }, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
         return response.Items
-            .Select(i => i.ConvertToPage(preview))
+            .Select(i => i.ConvertToPage())
             .OfType<BasePage>()
             .ToList();
     }
@@ -85,7 +85,7 @@ internal class UmbracoClient : IUmbracoClient
         bool preview = await _previewService.GetPreview();
         PagedIApiContentResponseModel response = await _umbracoApi.GetContentAsync(filter: new[] { $"search:{query}", "hideFromSearch:false" }, skip: skip, take: take, accept_Language: culture, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
         return (response.Items
-            .Select(i => i.ConvertToPage(preview))
+            .Select(i => i.ConvertToPage())
             .OfType<BasePage>()
             .ToList(), response.Total);
     }

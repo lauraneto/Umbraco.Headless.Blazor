@@ -7,12 +7,12 @@ namespace UmbracoDemo.Client.Helpers;
 
 public static class UmbracoApiExtensions
 {
-    public static BasePage? ConvertToPage(this IApiContentResponseModel apiContentResponseModel, bool preview)
+    public static BasePage? ConvertToPage(this IApiContentResponseModel apiContentResponseModel)
     {
-        return GetPageBuilder(apiContentResponseModel.ContentType)?.Invoke(null, new object?[] { apiContentResponseModel, preview }) as BasePage;
+        return GetPageBuilder(apiContentResponseModel.ContentType)?.Invoke(null, new object?[] { apiContentResponseModel }) as BasePage;
     }
 
-    public static T ToContent<T>(this IApiContentResponseModel source, bool preview) where T : class, IContent, new()
+    public static T ToContent<T>(this IApiContentResponseModel source) where T : class, IContent, new()
     {
         T content = source.Properties.ToObject<T>() ?? new T();
         if (content is BasePage page)
@@ -20,8 +20,8 @@ public static class UmbracoApiExtensions
             page.Id = source.Id;
             page.ContentType = source.ContentType;
             page.Name = source.Name;
-            page.Culture = source.Cultures.FirstOrDefault(c => c.Value.Path == source.Route.Path).Key;
-            page.Cultures = source.Cultures.ToDictionary(c => c.Key, c => new Route
+            page.Culture = source.Cultures?.FirstOrDefault(c => c.Value.Path == source.Route.Path).Key;
+            page.Cultures = source.Cultures?.ToDictionary(c => c.Key, c => new Route
             {
                 Path = c.Value.Path,
                 StartItem = new StartItem
@@ -29,7 +29,7 @@ public static class UmbracoApiExtensions
                     Id = c.Value.StartItem.Id,
                     Path = c.Value.StartItem.Path
                 }
-            });
+            }) ?? new Dictionary<string, Route>();
             page.Route = new Route
             {
                 Path = source.Route.Path,
@@ -39,7 +39,6 @@ public static class UmbracoApiExtensions
                     Path = source.Route.StartItem.Path
                 }
             };
-            page.Preview = preview;
         }
 
         return content;

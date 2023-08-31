@@ -19,4 +19,6 @@ public class BlogDetail : BasePage, IContent, ICompositionBasePage
     public BlockList Blocks { get; set; }
 
     public List<string>? Tags { get; set; }
+
+    public List<BlogDetail>? RelatedBlogs { get; set; }
 }

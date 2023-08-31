@@ -24,7 +24,7 @@ It was built as a POC/demo to test the capabilities of the new API, and make it 
 	- [x] Custom search filter
 	- [x] Pagination
 	- [x] Hide certain pages from search
-- [ ] Expansions (related blogs?)
+- [x] Expansions (related blogs)
 - [ ] Custom property editors (use a community package)
 - [ ] Extend the API response
 	- [ ] Add my own property editor

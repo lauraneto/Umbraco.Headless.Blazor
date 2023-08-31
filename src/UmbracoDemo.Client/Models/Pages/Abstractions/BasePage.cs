@@ -10,8 +10,6 @@ public abstract class BasePage
 
     public string? Culture { get; set; }
 
-    public bool Preview { get; set; }
-
     public Dictionary<string, Route> Cultures { get; set; } = new();
 
     public Route Route { get; set; }

@@ -4,7 +4,52 @@
     <BlockList Blocks="Page?.Blocks" />
 </div>
 
+@if (Page?.RelatedBlogs?.Any() ?? false)
+{
+    <div>
+        <MudText Typo="Typo.h3" Class="pb-4">Related blogs</MudText>
+        <MudGrid>
+            @foreach (var child in Page?.RelatedBlogs ?? Enumerable.Empty<UmbracoDemo.Client.Models.Pages.BlogDetail>())
+            {
+                <MudItem @key="child.Id" xs="12" sm="6" md="4">
+                    <MudCard Style="display: flex; flex-direction: column; min-height: 100%;">
+                        @{
+                            var image = child.Image?.FirstOrDefault();
+                            var imageUrl = image == null
+                                ? "http://satyr.io/980x16:9"
+                                : $"{ApiUrl}{image.Url}?width=400&height=270";
+                        }
+                        <MudCardMedia Image="@imageUrl" Height="200"/>
+                        <MudCardContent Style="flex: auto;">
+                            <MudText Typo="Typo.h5">@(child.Title ?? child.Name)</MudText>
+                            @foreach (var tag in child.Tags ?? Enumerable.Empty<string>())
+                            {
+                                <MudChip Variant="Variant.Text">@tag</MudChip>
+                            }
+                            <MudText Typo="Typo.body2" Class="py-2">Date: @(child.Date?.ToString("dd MMMM yyyy"))</MudText>
+                            <MudText Typo="Typo.body2">@((MarkupString)(child.Intro?.Markup ?? ""))</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Href="@child.Route.GetUrl()" Variant="Variant.Text" Color="Color.Transparent" EndIcon="@Icons.Material.Filled.ArrowRight">Read more</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    </div>
+}
+
 @code {
     [Parameter]
     public UmbracoDemo.Client.Models.Pages.BlogDetail? Page { get; set; }
+
+    [Inject]
+    public required IConfiguration Config { get; set; }
+
+    private string? ApiUrl { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ApiUrl = Config["UmbracoApi:BaseUrl"];
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using UmbracoDemo.Client.Models.Pages.Abstractions;
 
 namespace UmbracoDemo.Client.Helpers;
 
@@ -29,14 +30,41 @@ public static class JsonExtensions
 
         foreach (var property in typeof(T).GetProperties())
         {
-            if (caseInsensitiveDict.TryGetValue(property.Name, out var value))
+            if (!caseInsensitiveDict.TryGetValue(property.Name, out var value)) continue;
+
+            object? finalValue;
+            if (property.PropertyType.IsInstanceOfType(value))
             {
-                property.SetValue(someObject,
-                    property.PropertyType.IsInstanceOfType(value)
-                        ? value
-                        : value.GetValue(property.PropertyType),
-                    null);
+                finalValue = value;
             }
+            else if (property.PropertyType.IsGenericType
+                     && property.PropertyType.GetGenericArguments().FirstOrDefault() is { } genericArgument
+                     && genericArgument.IsAssignableTo(typeof(IContent))
+                     && property.PropertyType.IsAssignableTo(typeof(ICollection<>).MakeGenericType(genericArgument)))
+
+            {
+                var contentList =
+                    value.GetValue(typeof(List<IApiContentResponseModel>)) as List<IApiContentResponseModel>;
+
+                dynamic dynamicValue = Activator.CreateInstance(property.PropertyType);
+
+                if (contentList is { Count: > 0 })
+                {
+                    foreach (var content in contentList)
+                    {
+                        dynamicValue.Add((dynamic)content.ConvertToPage());
+                    }
+                }
+
+                finalValue = dynamicValue;
+            }
+            else
+            {
+                finalValue = value.GetValue(property.PropertyType);
+            }
+            property.SetValue(someObject,
+                finalValue,
+                null);
         }
 
         return someObject;
