@@ -17,4 +17,6 @@ public class BlogDetail : BasePage, IContent, ICompositionBasePage
     public DateTime? Date { get; set; }
 
     public BlockList Blocks { get; set; }
+
+    public List<string>? Tags { get; set; }
 }

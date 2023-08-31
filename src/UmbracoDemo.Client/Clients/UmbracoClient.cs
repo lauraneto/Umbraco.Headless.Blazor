@@ -11,7 +11,10 @@ public interface IUmbracoClient
     Task<T?> GetContentSingleByType<T>(string? culture = null,
         CancellationToken cancellationToken = default) where T : class, IContent, new();
 
-    Task<ICollection<BasePage>> GetChildrenByPath(string path, string[]? sort = null,
+    Task<ICollection<BasePage>> GetChildrenByPath(
+        string path,
+        string[]? filter = null,
+        string[]? sort = null,
         CancellationToken cancellationToken = default);
 
     Task<(ICollection<BasePage> Pages, long Total)> Search(string query, int skip, int take, string? culture = null,
@@ -62,10 +65,10 @@ internal class UmbracoClient : IUmbracoClient
         }
     }
 
-    public async Task<ICollection<BasePage>> GetChildrenByPath(string path, string[]? sort = null, CancellationToken cancellationToken = default)
+    public async Task<ICollection<BasePage>> GetChildrenByPath(string path, string[]? filter = null, string[]? sort = null, CancellationToken cancellationToken = default)
     {
         bool preview = await _previewService.GetPreview();
-        var response = await _umbracoApi.GetContentAsync(fetch: $"children:{path}", sort: sort ?? new[] { "sortOrder:asc" }, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
+        var response = await _umbracoApi.GetContentAsync(fetch: $"children:{path}", filter: filter ?? Enumerable.Empty<string>(), sort: sort ?? new[] { "sortOrder:asc" }, preview: preview, api_Key: preview ? _apiKey : null, cancellationToken: cancellationToken);
         return response.Items
             .Select(i => i.ConvertToPage(preview))
             .OfType<BasePage>()

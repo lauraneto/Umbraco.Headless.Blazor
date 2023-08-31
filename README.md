@@ -16,14 +16,15 @@ It was built as a POC/demo to test the capabilities of the new API, and make it 
 - [x] Sample pages
 - [x] Blocks (using block list)
 - [x] Content overview
-	- [x] Custom sort
-	- [ ] Custom filter (tags?)
+	- [x] Custom sort (date)
+	- [x] Custom filter (tags)
 - [x] Multi-lingual
 - [x] Preview mode
 - [x] Simple search
 	- [x] Custom search filter
 	- [x] Pagination
 	- [x] Hide certain pages from search
+- [ ] Expansions (related blogs?)
 - [ ] Custom property editors (use a community package)
 - [ ] Extend the API response
 	- [ ] Add my own property editor

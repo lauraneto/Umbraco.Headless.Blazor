@@ -3,10 +3,18 @@
 
 <MudGrid >
     <MudItem xs="12" sm="6" md="4">
-        <MudSelect T="SortItem" Label="Sort" Value="@_currentSort" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" ValueChanged="OnDropdownItemClicked">
+        <MudSelect T="SortItem" Label="Sort" Value="@_currentSort" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" ValueChanged="OnSortChanged">
             @foreach (var sortOption in SortOptions)
             {
                 <MudSelectItem Value="sortOption">@sortOption.Label</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudSelect T="string" Label="Tags" SelectedValues="@_currentTags" MultiSelection="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" SelectedValuesChanged="OnTagsChanged">
+            @foreach (var tag in _tags ?? Enumerable.Empty<string>())
+            {
+                <MudSelectItem Value="tag">@tag</MudSelectItem>
             }
         </MudSelect>
     </MudItem>
@@ -25,6 +33,10 @@
                  <MudCardMedia Image="@imageUrl" Height="200" />
                  <MudCardContent Style="flex: auto;">
                      <MudText Typo="Typo.h5">@(child.Title ?? child.Name)</MudText>
+                     @foreach (var tag in child.Tags ?? Enumerable.Empty<string>())
+                     {
+                        <MudChip Variant="Variant.Text">@tag</MudChip>
+                     }
                      <MudText Typo="Typo.body2" Class="py-2">Date: @(child.Date?.ToString("dd MMMM yyyy"))</MudText>
                      <MudText Typo="Typo.body2">@((MarkupString)(child.Intro?.Markup ?? ""))</MudText>
                  </MudCardContent>
@@ -52,12 +64,16 @@
         new SortItem("Date - Ascending", "date", "asc"),
         new SortItem("Popularity", "sortOrder", "asc")
     };
+
+    private List<string>? _tags;
     
     private string? ApiUrl { get; set; }
 
     private ICollection<UmbracoDemo.Client.Models.Pages.BlogDetail> Children { get; set; } = new List<UmbracoDemo.Client.Models.Pages.BlogDetail>();
 
     private SortItem? _currentSort = SortOptions[0];
+
+    private IEnumerable<string> _currentTags = new List<string>();
 
     protected override void OnInitialized()
     {
@@ -69,7 +85,7 @@
         await UpdateChildren();
     }
 
-    private async Task OnDropdownItemClicked(SortItem currentItem)
+    private async Task OnSortChanged(SortItem currentItem)
     {
         if (_currentSort != currentItem)
         {
@@ -78,15 +94,35 @@
         }
     }
 
+    private async Task OnTagsChanged(IEnumerable<string> tags)
+    {
+        _currentTags = tags;
+        await UpdateChildren();
+    }
+
+
+    private UmbracoDemo.Client.Models.Pages.BlogOverview? _previousPage;
     private async Task UpdateChildren()
     {
         if (Page == null)
         {
+            _previousPage = null;
             Children = new List<UmbracoDemo.Client.Models.Pages.BlogDetail>();
             return;
         }
 
-        Children = (await UmbracoClient.GetChildrenByPath(Page.Route.Path, sort: _currentSort != null ? new[] { $"{_currentSort.SortName}:{_currentSort.SortOrder}" } : null)).OfType<UmbracoDemo.Client.Models.Pages.BlogDetail>().ToList();
+        Children = (await UmbracoClient.GetChildrenByPath(
+                Page.Route.Path,
+                filter: _currentTags.Any() ? new[] { $"tags:{string.Join(',', _currentTags)}" } : null,
+                sort: _currentSort != null ? new[] { $"{_currentSort.SortName}:{_currentSort.SortOrder}" } : null))
+            .OfType<UmbracoDemo.Client.Models.Pages.BlogDetail>().ToList();
+
+        if (_previousPage != Page)
+        {
+            _tags = Children.SelectMany(c => c.Tags ?? Enumerable.Empty<string>()).Distinct().ToList();
+        }
+
+        _previousPage = Page;
     }
 
     public class SortItem
