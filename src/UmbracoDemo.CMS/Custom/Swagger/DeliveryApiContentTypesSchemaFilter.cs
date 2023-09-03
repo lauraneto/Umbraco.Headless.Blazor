@@ -100,8 +100,13 @@ namespace UmbracoDemo.CMS.Custom.Swagger
                                             .Where(p => contentType.PropertyTypes.Any(x => x.Alias == p.Alias)) // Filter out composition properties
                                             .ToDictionary(
                                                 p => p.Alias,
-                                                p => context.SchemaGenerator.GenerateSchema(GetPropertyType(p), context.SchemaRepository)
-                                            )
+                                                p =>
+                                                {
+                                                    OpenApiSchema propertySchema = context.SchemaGenerator.GenerateSchema(GetPropertyType(p), context.SchemaRepository);
+                                                    propertySchema.Nullable = true;
+
+                                                    return propertySchema;
+                                                })
                                     }
                                 )
                         }
