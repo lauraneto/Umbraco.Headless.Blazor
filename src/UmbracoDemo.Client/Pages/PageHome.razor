@@ -1,0 +1,10 @@
+﻿<Hero Title="@(Page?.Properties.Title ?? Page?.Name)" Intro="@(Page?.Properties.Intro?.Markup)" />
+
+<div>
+    <BlockList Blocks="Page?.Properties.Blocks" />
+</div>
+
+@code {
+    [Parameter]
+    public PageHome__cadContentResponseModel? Page { get; set; }
+}

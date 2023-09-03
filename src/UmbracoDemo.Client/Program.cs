@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using UmbracoDemo.Client;
-using UmbracoDemo.Client.Clients;
 using UmbracoDemo.Client.Services;
+using UmbracoDemo.Client.Umbraco;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

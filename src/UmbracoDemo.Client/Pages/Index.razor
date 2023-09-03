@@ -1,8 +1,6 @@
 ﻿@page "/{*slug}"
-@using UmbracoDemo.Client.Clients
-@using UmbracoDemo.Client.Models.Pages.Abstractions
 @using System.Collections.Concurrent
-@using UmbracoDemo.Client.Models.Pages
+@using UmbracoDemo.Client.Helpers
 @using UmbracoDemo.Client.Services
 
 <CascadingValue Name="@nameof(Query)" Value="@Query" IsFixed="true">
@@ -15,7 +13,7 @@
                 @if (!_loaded)
                 {
                 }
-                else if (_page != null && GetPageType(_page) is { } pageType)
+                else if (_page != null && GetPageType(_page.GetType().GetContentTypeName()) is { } pageType)
                 {
                     <PageTitle>@(_page.Name) - Headless Demo</PageTitle>
 
@@ -53,8 +51,8 @@
     public required IPreviewService PreviewService { get; set; }
 
     private bool _loaded;
-    private BasePage? _page;
-    private Settings? _settings;
+    private IApiContentResponseModel? _page;
+    private Settings__cadContentResponseModel? _settings;
     private bool _previewEnabled;
 
     protected override async Task OnParametersSetAsync()
@@ -75,7 +73,7 @@
         var culture = _page?.Culture ?? "en-US";
         if (_settings?.Culture != culture || forceUpdate)
         {
-            _settings = await UmbracoClient.GetContentSingleByType<Settings>(culture);
+            _settings = await UmbracoClient.GetContentSingleByType<Settings__cadContentResponseModel>(culture);
         }
         
         _loaded = true;
@@ -84,8 +82,8 @@
     protected override bool ShouldRender() => _loaded;
 
     private static readonly ConcurrentDictionary<string, Type?> Pages = new();
-    private static Type? GetPageType(BasePage page) =>
-        Pages.GetOrAdd(page.GetType().Name, key =>
+    private static Type? GetPageType(string contentTypeAlias) =>
+        Pages.GetOrAdd(contentTypeAlias, key =>
         {
             var markerType = typeof(Index);
             return markerType.Assembly.GetType($"{markerType.Namespace}.{key}", false, true);

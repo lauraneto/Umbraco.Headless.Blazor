@@ -1,0 +1,1374 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Umbraco Delivery API",
+    "description": "You can find out more about the Umbraco Delivery API in [the documentation](https://docs.umbraco.com/umbraco-cms/v/12.latest/reference/content-delivery-api).",
+    "version": "Latest"
+  },
+  "paths": {
+    "/umbraco/delivery/api/v1/content": {
+      "get": {
+        "tags": [
+          "Content"
+        ],
+        "operationId": "GetContent",
+        "parameters": [
+          {
+            "name": "fetch",
+            "in": "query",
+            "description": "Specifies the content items to fetch. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/v/12.latest/reference/content-delivery-api#query-parameters) for more details on this.",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Select all": {
+                "value": ""
+              },
+              "Select all ancestors of a node by id": {
+                "value": "ancestors:id"
+              },
+              "Select all ancestors of a node by path": {
+                "value": "ancestors:path"
+              },
+              "Select all children of a node by id": {
+                "value": "children:id"
+              },
+              "Select all children of a node by path": {
+                "value": "children:path"
+              },
+              "Select all descendants of a node by id": {
+                "value": "descendants:id"
+              },
+              "Select all descendants of a node by path": {
+                "value": "descendants:path"
+              }
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Defines how to filter the fetched content items. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/v/12.latest/reference/content-delivery-api#query-parameters) for more details on this.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Default filter": {
+                "value": ""
+              },
+              "Filter by content type": {
+                "value": [
+                  "contentType:alias1"
+                ]
+              },
+              "Filter by name": {
+                "value": [
+                  "name:nodeName"
+                ]
+              }
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Defines how to sort the found content items. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/v/12.latest/reference/content-delivery-api#query-parameters) for more details on this.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Default sort": {
+                "value": ""
+              },
+              "Sort by create date": {
+                "value": [
+                  "createDate:asc",
+                  "createDate:desc"
+                ]
+              },
+              "Sort by level": {
+                "value": [
+                  "level:asc",
+                  "level:desc"
+                ]
+              },
+              "Sort by name": {
+                "value": [
+                  "name:asc",
+                  "name:desc"
+                ]
+              },
+              "Sort by sort order": {
+                "value": [
+                  "sortOrder:asc",
+                  "sortOrder:desc"
+                ]
+              },
+              "Sort by update date": {
+                "value": [
+                  "updateDate:asc",
+                  "updateDate:desc"
+                ]
+              }
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Specifies the number of found content items to skip. Use this to control pagination of the response.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Specifies the number of found content items to take. Use this to control pagination of the response.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/v/12.latest/reference/content-delivery-api#query-parameters) for more details on this.",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Expand none": {
+                "value": ""
+              },
+              "Expand all": {
+                "value": "all"
+              },
+              "Expand specific property": {
+                "value": "property:alias1"
+              },
+              "Expand specific properties": {
+                "value": "property:alias1,alias2"
+              }
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "description": "Defines the language to return. Use this when querying language variant content items.",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Default": {
+                "value": ""
+              },
+              "English culture": {
+                "value": "en-us"
+              }
+            }
+          },
+          {
+            "name": "Api-Key",
+            "in": "header",
+            "description": "API key specified through configuration to authorize access to the API.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Preview",
+            "in": "header",
+            "description": "Whether to request draft content.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Start-Item",
+            "in": "header",
+            "description": "URL segment or GUID of a root content item.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedIApiContentResponseModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/umbraco/delivery/api/v1/content/item/{path}": {
+      "get": {
+        "tags": [
+          "Content"
+        ],
+        "operationId": "GetContentItemByPath",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/v/12.latest/reference/content-delivery-api#query-parameters) for more details on this.",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Expand none": {
+                "value": ""
+              },
+              "Expand all": {
+                "value": "all"
+              },
+              "Expand specific property": {
+                "value": "property:alias1"
+              },
+              "Expand specific properties": {
+                "value": "property:alias1,alias2"
+              }
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "description": "Defines the language to return. Use this when querying language variant content items.",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Default": {
+                "value": ""
+              },
+              "English culture": {
+                "value": "en-us"
+              }
+            }
+          },
+          {
+            "name": "Api-Key",
+            "in": "header",
+            "description": "API key specified through configuration to authorize access to the API.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Preview",
+            "in": "header",
+            "description": "Whether to request draft content.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Start-Item",
+            "in": "header",
+            "description": "URL segment or GUID of a root content item.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IApiContentResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/umbraco/delivery/api/v1/content/item/{id}": {
+      "get": {
+        "tags": [
+          "Content"
+        ],
+        "operationId": "GetContentItemById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/v/12.latest/reference/content-delivery-api#query-parameters) for more details on this.",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Expand none": {
+                "value": ""
+              },
+              "Expand all": {
+                "value": "all"
+              },
+              "Expand specific property": {
+                "value": "property:alias1"
+              },
+              "Expand specific properties": {
+                "value": "property:alias1,alias2"
+              }
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "description": "Defines the language to return. Use this when querying language variant content items.",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Default": {
+                "value": ""
+              },
+              "English culture": {
+                "value": "en-us"
+              }
+            }
+          },
+          {
+            "name": "Api-Key",
+            "in": "header",
+            "description": "API key specified through configuration to authorize access to the API.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Preview",
+            "in": "header",
+            "description": "Whether to request draft content.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Start-Item",
+            "in": "header",
+            "description": "URL segment or GUID of a root content item.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IApiContentResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiBlockGridAreaModel": {
+        "type": "object",
+        "properties": {
+          "alias": {
+            "type": "string"
+          },
+          "rowSpan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "columnSpan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiBlockGridItemModel"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiBlockGridItemModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiBlockItemModel"
+          }
+        ],
+        "properties": {
+          "rowSpan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "columnSpan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "areaGridColumns": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "areas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiBlockGridAreaModel"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiBlockItemModel": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/IApiElementModel"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiBlockListModel": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiBlockItemModel"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiLinkModel": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "target": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "destinationId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "readOnly": true
+          },
+          "destinationType": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "route": {
+            "$ref": "#/components/schemas/IApiContentRouteModel"
+          },
+          "linkType": {
+            "$ref": "#/components/schemas/LinkTypeModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiMediaWithCropsModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "readOnly": true
+          },
+          "mediaType": {
+            "type": "string",
+            "readOnly": true
+          },
+          "url": {
+            "type": "string",
+            "readOnly": true
+          },
+          "extension": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "bytes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": { },
+            "readOnly": true
+          },
+          "focalPoint": {
+            "$ref": "#/components/schemas/ImageCropperFocalPointModel"
+          },
+          "crops": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImageCropperCropModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ProblemDetails"
+          }
+        ],
+        "properties": {
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "readOnly": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "IApiContentModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updateDate": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "route": {
+            "$ref": "#/components/schemas/IApiContentRouteModel"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "contentType": {
+            "type": "string",
+            "readOnly": true
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": { },
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "contentType",
+          "mapping": {
+            "pageBlogDetail__cad": "#/components/schemas/PageBlogDetail__cadContentModel",
+            "pageBlogOverview__cad": "#/components/schemas/PageBlogOverview__cadContentModel",
+            "pageContent__cad": "#/components/schemas/PageContent__cadContentModel",
+            "pageHome__cad": "#/components/schemas/PageHome__cadContentModel",
+            "pageSearch__cad": "#/components/schemas/PageSearch__cadContentModel",
+            "settings__cad": "#/components/schemas/Settings__cadContentModel"
+          }
+        }
+      },
+      "IApiContentResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentModel"
+          }
+        ],
+        "properties": {
+          "cultures": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/IApiContentRouteModel"
+            },
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updateDate": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "route": {
+            "$ref": "#/components/schemas/IApiContentRouteModel"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "contentType": {
+            "type": "string",
+            "readOnly": true
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": { },
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "contentType",
+          "mapping": {
+            "pageBlogDetail__cad": "#/components/schemas/PageBlogDetail__cadContentResponseModel",
+            "pageBlogOverview__cad": "#/components/schemas/PageBlogOverview__cadContentResponseModel",
+            "pageContent__cad": "#/components/schemas/PageContent__cadContentResponseModel",
+            "pageHome__cad": "#/components/schemas/PageHome__cadContentResponseModel",
+            "pageSearch__cad": "#/components/schemas/PageSearch__cadContentResponseModel",
+            "settings__cad": "#/components/schemas/Settings__cadContentResponseModel"
+          }
+        }
+      },
+      "IApiContentRouteModel": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "readOnly": true
+          },
+          "startItem": {
+            "$ref": "#/components/schemas/IApiContentStartItemModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IApiContentStartItemModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "path": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IApiElementModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "contentType": {
+            "type": "string",
+            "readOnly": true
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": { },
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "contentType",
+          "mapping": {
+            "pageBlogDetail__cad": "#/components/schemas/PageBlogDetail__cadElementModel",
+            "pageBlogOverview__cad": "#/components/schemas/PageBlogOverview__cadElementModel",
+            "pageContent__cad": "#/components/schemas/PageContent__cadElementModel",
+            "pageHome__cad": "#/components/schemas/PageHome__cadElementModel",
+            "imageBlock__cad": "#/components/schemas/ImageBlock__cadElementModel",
+            "pageComposition__cad": "#/components/schemas/PageComposition__cadElementModel",
+            "pageSearch__cad": "#/components/schemas/PageSearch__cadElementModel",
+            "settings__cad": "#/components/schemas/Settings__cadElementModel",
+            "textBlock__cad": "#/components/schemas/TextBlock__cadElementModel"
+          }
+        }
+      },
+      "ImageBlock__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/ImageBlock__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImageBlock__cadPropertiesModel": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiMediaWithCropsModel"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "ImageCropperCropCoordinatesModel": {
+        "type": "object",
+        "properties": {
+          "x1": {
+            "type": "number",
+            "format": "double"
+          },
+          "y1": {
+            "type": "number",
+            "format": "double"
+          },
+          "x2": {
+            "type": "number",
+            "format": "double"
+          },
+          "y2": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImageCropperCropModel": {
+        "type": "object",
+        "properties": {
+          "alias": {
+            "type": "string",
+            "nullable": true
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/ImageCropperCropCoordinatesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImageCropperFocalPointModel": {
+        "type": "object",
+        "properties": {
+          "left": {
+            "type": "number",
+            "format": "double"
+          },
+          "top": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LinkTypeModel": {
+        "enum": [
+          "Content",
+          "Media",
+          "External"
+        ],
+        "type": "string"
+      },
+      "PageBlogDetail__cadContentModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageBlogDetail__cadElementModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageBlogDetail__cadContentResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentResponseModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageBlogDetail__cadContentModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageBlogDetail__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/PageBlogDetail__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageBlogDetail__cadPropertiesModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PageComposition__cadPropertiesModel"
+          }
+        ],
+        "properties": {
+          "image": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiMediaWithCropsModel"
+            },
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "blocks": {
+            "$ref": "#/components/schemas/ApiBlockListModel"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "relatedBlogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IApiContentModel"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "PageBlogOverview__cadContentModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageBlogOverview__cadElementModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageBlogOverview__cadContentResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentResponseModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageBlogOverview__cadContentModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageBlogOverview__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/PageBlogOverview__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageBlogOverview__cadPropertiesModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PageComposition__cadPropertiesModel"
+          }
+        ]
+      },
+      "PageComposition__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/PageComposition__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageComposition__cadPropertiesModel": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "intro": {
+            "$ref": "#/components/schemas/RichTextModel"
+          },
+          "hideFromSearch": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "PageContent__cadContentModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageContent__cadElementModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageContent__cadContentResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentResponseModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageContent__cadContentModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageContent__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/PageContent__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageContent__cadPropertiesModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PageComposition__cadPropertiesModel"
+          }
+        ],
+        "properties": {
+          "blocks": {
+            "$ref": "#/components/schemas/ApiBlockListModel"
+          }
+        }
+      },
+      "PageHome__cadContentModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageHome__cadElementModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageHome__cadContentResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentResponseModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageHome__cadContentModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageHome__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/PageHome__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageHome__cadPropertiesModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PageComposition__cadPropertiesModel"
+          }
+        ],
+        "properties": {
+          "blocks": {
+            "$ref": "#/components/schemas/ApiBlockListModel"
+          }
+        }
+      },
+      "PageSearch__cadContentModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageSearch__cadElementModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageSearch__cadContentResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentResponseModel"
+          },
+          {
+            "$ref": "#/components/schemas/PageSearch__cadContentModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "PageSearch__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/PageSearch__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageSearch__cadPropertiesModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PageComposition__cadPropertiesModel"
+          }
+        ]
+      },
+      "PagedIApiContentResponseModel": {
+        "required": [
+          "items",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IApiContentResponseModel"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "RichTextModel": {
+        "type": "object",
+        "properties": {
+          "markup": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Settings__cadContentModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentModel"
+          },
+          {
+            "$ref": "#/components/schemas/Settings__cadElementModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "Settings__cadContentResponseModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiContentResponseModel"
+          },
+          {
+            "$ref": "#/components/schemas/Settings__cadContentModel"
+          }
+        ],
+        "additionalProperties": false
+      },
+      "Settings__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/Settings__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Settings__cadPropertiesModel": {
+        "type": "object",
+        "properties": {
+          "homeLink": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiLinkModel"
+            },
+            "nullable": true
+          },
+          "headerLinks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiLinkModel"
+            },
+            "nullable": true
+          },
+          "searchLink": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiLinkModel"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "TextBlock__cadElementModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IApiElementModel"
+          }
+        ],
+        "properties": {
+          "properties": {
+            "$ref": "#/components/schemas/TextBlock__cadPropertiesModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TextBlock__cadPropertiesModel": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/RichTextModel"
+          }
+        }
+      }
+    }
+  }
+}

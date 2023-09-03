@@ -1,5 +1,4 @@
-﻿@using UmbracoDemo.Client.Models.DataTypes
-@if (Image is null)
+﻿@if (Image is null)
 {
     return;
 }
@@ -12,14 +11,14 @@
 
 @code {
     [Parameter]
-    public UmbracoDemo.Client.Models.Blocks.ImageBlock? Content { get; set; }
+    public ImageBlock__cadElementModel? Content { get; set; }
 
     [Inject]
     public required IConfiguration Config { get; set; }
 
     private string? ApiUrl { get; set; }
 
-    public Image? Image => Content?.Properties.Image?.FirstOrDefault();
+    public ApiMediaWithCropsModel? Image => Content?.Properties.Image?.FirstOrDefault();
 
     protected override void OnInitialized()
     {

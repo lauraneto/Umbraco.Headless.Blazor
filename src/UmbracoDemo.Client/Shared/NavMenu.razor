@@ -1,22 +1,20 @@
-﻿@using UmbracoDemo.Client.Models.DataTypes
-@using UmbracoDemo.Client.Models.Pages
-@using UmbracoDemo.Client.Models.Pages.Abstractions
-@using UmbracoDemo.Client.Services
-<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Href="@(Settings?.HomeLink?.FirstOrDefault()?.GetUrl())" HtmlTag="a" />
+﻿@using UmbracoDemo.Client.Services
+@using UmbracoDemo.Client.Umbraco
+<MudIconButton Icon="@Icons.Material.Outlined.Home" Color="Color.Inherit" Href="@(Settings?.Properties.HomeLink?.FirstOrDefault()?.GetUrl())" HtmlTag="a" />
 <MudSpacer />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
-    @foreach (var link in Settings?.HeaderLinks ?? Enumerable.Empty<Link>())
+    @foreach (var link in Settings?.Properties.HeaderLinks ?? Enumerable.Empty<ApiLinkModel>())
     {
         <MudLink Color="Color.Inherit" Href="@link.GetUrl()" Match="NavLinkMatch.Prefix" Class="mx-8">@link.Title</MudLink>
     }
 </MudHidden>
 <MudSpacer />
 <PreviewToggle OnPreviewToggled="OnPreviewToggled" />
-<MudIconButton Icon="@Icons.Material.Outlined.Search" Color="Color.Inherit" Link="@(Settings?.SearchLink?.FirstOrDefault()?.GetUrl())" />
+<MudIconButton Icon="@Icons.Material.Outlined.Search" Color="Color.Inherit" Href="@(Settings?.Properties.SearchLink?.FirstOrDefault()?.GetUrl())" />
 <LanguagePicker Page="Page" />
 <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="false">
     <MudMenu Label="Open Menu" Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit">
-        @foreach (var link in Settings?.HeaderLinks ?? Enumerable.Empty<Link>())
+        @foreach (var link in Settings?.Properties.HeaderLinks ?? Enumerable.Empty<ApiLinkModel>())
         {
             <MudMenuItem Color="Color.Inherit" Href="@link.GetUrl()" Match="NavLinkMatch.All">@link.Title</MudMenuItem>
         }
@@ -26,10 +24,10 @@
 @code
 {
     [Parameter]
-    public BasePage? Page { get; set; }
+    public IApiContentResponseModel? Page { get; set; }
 
     [Parameter]
-    public Settings? Settings { get; set; }
+    public Settings__cadContentResponseModel? Settings { get; set; }
 
     [Parameter]
     public EventCallback OnPreviewToggled { get; set; }

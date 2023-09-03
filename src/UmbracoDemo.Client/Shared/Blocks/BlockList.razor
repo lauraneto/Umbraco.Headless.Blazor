@@ -1,7 +1,7 @@
 ﻿@using System.Collections.Concurrent
-@using UmbracoDemo.Client.Models.DataTypes
+@using UmbracoDemo.Client.Helpers
 
-@foreach (var block in Blocks?.Items ?? Enumerable.Empty<BlockListItem>())
+@foreach (var block in Blocks?.Items ?? Enumerable.Empty<ApiBlockItemModel>())
 {
     @if (block.Content != null && GetBlockType(block.Content.GetType()) is { } componentType)
     {
@@ -13,7 +13,7 @@
 
 @code {
     [Parameter]
-    public UmbracoDemo.Client.Models.DataTypes.BlockList? Blocks { get; set; }
+    public ApiBlockListModel? Blocks { get; set; }
 
     private static readonly ConcurrentDictionary<Type, Type?> Components = new();
 
@@ -21,6 +21,6 @@
         Components.GetOrAdd(contentType, key =>
         {
             var markerType = typeof(BlockList);
-            return markerType.Assembly.GetType($"{markerType.Namespace}.{key.Name}", false, true);
+            return markerType.Assembly.GetType($"{markerType.Namespace}.{key.GetBlockContentTypeName()}", false, true);
         });
 }

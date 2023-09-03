@@ -29,6 +29,7 @@ It was built as a POC/demo to test the capabilities of the new API, and make it 
 - [ ] Extend the API response
 	- [ ] Add my own property editor
 	- [ ] Use code
+- [x] Typed (swagger) models (props to [vsilvar](https://github.com/vsilvar) 🙌)
 	
 ## Try it out🙌
 

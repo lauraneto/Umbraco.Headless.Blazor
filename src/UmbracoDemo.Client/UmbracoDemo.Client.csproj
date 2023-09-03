@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -23,7 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<OpenApiReference Include="..\umbraco-swagger.json" CodeGenerator="NSwagCSharp" Namespace="UmbracoDemo.Client" Options="/GenerateClientInterfaces:true /GenerateNullableReferenceTypes:true /GenerateOptionalParameters:true /JsonLibrary:SystemTextJson" ClassName="UmbracoApi" Link="OpenAPIs\umbraco-swagger.json" />
+		<OpenApiReference Include="Umbraco\Swagger\umbraco-swagger.json" CodeGenerator="NSwagCSharp" Namespace="UmbracoDemo.Client.Umbraco" ClassName="UmbracoApi">
+			<SourceUri>https://localhost:44361/umbraco/swagger/delivery/swagger.json</SourceUri>
+			<Options>/GenerateClientInterfaces:true /GenerateNullableReferenceTypes:true /GenerateOptionalParameters:true /JsonLibrary:SystemTextJson</Options>
+		</OpenApiReference>
 	</ItemGroup>
-	
+
 </Project>

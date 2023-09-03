@@ -1,12 +1,10 @@
-﻿@using UmbracoDemo.Client.Clients
-@using UmbracoDemo.Client.Models.Pages.Compositions
-<Hero Title="@(Page?.Title ?? Page?.Name)" Intro="@(Page?.Intro?.Markup)" />
+﻿<Hero Title="@(Page?.Properties.Title ?? Page?.Name)" Intro="@(Page?.Properties.Intro?.Markup)" />
 <MudTextField T="string" Placeholder="Ask me anything..." Label="Search" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" DebounceInterval="500" OnDebounceIntervalElapsed="OnQueryUpdated" />
 
 <MudGrid Class="pt-10">
-    @foreach (var result in Results ?? Enumerable.Empty<Models.Pages.Abstractions.BasePage>())
+    @foreach (var result in Results ?? Enumerable.Empty<IApiContentResponseModel>())
     {
-        var basePage = result as ICompositionBasePage;
+        var basePage = (result as IPageComposition)?.Properties;
         <MudItem xs="12" Class="py-4">
             <MudCard>
                 <MudCardContent>
@@ -25,7 +23,7 @@
 
 @code {
     [Parameter]
-    public UmbracoDemo.Client.Models.Pages.SearchPage? Page { get; set; }
+    public PageSearch__cadContentResponseModel? Page { get; set; }
 
     [Inject]
     public required IUmbracoClient UmbracoClient { get; set; }
@@ -42,7 +40,7 @@
     private const int ItemsPerPage = 4;
     private int _totalPages;
     private int _currentPage;
-    private ICollection<Models.Pages.Abstractions.BasePage>? Results { get; set; }
+    private ICollection<IApiContentResponseModel>? Results { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {

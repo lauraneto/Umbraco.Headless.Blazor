@@ -1,5 +1,5 @@
-﻿@using UmbracoDemo.Client.Models.Pages.Abstractions
-@using System.Globalization
+﻿@using System.Globalization
+@using UmbracoDemo.Client.Umbraco
 
 @if (Page?.Cultures is { Count: > 0 })
 {
@@ -13,7 +13,7 @@
 
 @code {
     [Parameter]
-    public BasePage? Page { get; set; }
+    public IApiContentResponseModel? Page { get; set; }
 
     private string GetFriendlyName(string culture)
     {

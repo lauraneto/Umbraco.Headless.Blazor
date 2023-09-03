@@ -1,5 +1,5 @@
-﻿@using UmbracoDemo.Client.Clients
-<Hero Title="@(Page?.Title ?? Page?.Name)" Intro="@(Page?.Intro?.Markup)" />
+﻿@using UmbracoDemo.Client.Helpers
+<Hero Title="@(Page?.Properties.Title ?? Page?.Name)" Intro="@(Page?.Properties.Intro?.Markup)" />
 
 <MudGrid >
     <MudItem xs="12" sm="6" md="4">
@@ -25,20 +25,20 @@
         <MudItem @key="child.Id" xs="12" sm="6" md="4">
              <MudCard Style="display: flex; flex-direction: column; min-height: 100%;">
                  @{
-                     var image = child.Image?.FirstOrDefault();
+                    var image = child.Properties.Image?.FirstOrDefault();
                      var imageUrl = image == null
                          ? "http://satyr.io/980x16:9"
                          : $"{ApiUrl}{image.Url}?width=400&height=270";
                  }
                  <MudCardMedia Image="@imageUrl" Height="200" />
                  <MudCardContent Style="flex: auto;">
-                     <MudText Typo="Typo.h5">@(child.Title ?? child.Name)</MudText>
-                     @foreach (var tag in child.Tags ?? Enumerable.Empty<string>())
+                    <MudText Typo="Typo.h5">@(child.Properties.Title ?? child.Name)</MudText>
+                        @foreach (var tag in child.Properties.Tags ?? Enumerable.Empty<string>())
                      {
                         <MudChip Variant="Variant.Text">@tag</MudChip>
                      }
-                     <MudText Typo="Typo.body2" Class="py-2">Date: @(child.Date?.ToString("dd MMMM yyyy"))</MudText>
-                     <MudText Typo="Typo.body2">@((MarkupString)(child.Intro?.Markup ?? ""))</MudText>
+                    <MudText Typo="Typo.body2" Class="py-2">Date: @(child.Properties.Date.MinValueAsNull()?.ToString("dd MMMM yyyy"))</MudText>
+                        <MudText Typo="Typo.body2">@((MarkupString)(child.Properties.Intro?.Markup ?? ""))</MudText>
                  </MudCardContent>
                  <MudCardActions>
                      <MudButton Href="@child.Route.GetUrl()" Variant="Variant.Text" Color="Color.Transparent" EndIcon="@Icons.Material.Filled.ArrowRight">Read more</MudButton>
@@ -50,7 +50,7 @@
 
 @code {
     [Parameter]
-    public UmbracoDemo.Client.Models.Pages.BlogOverview? Page { get; set; }
+    public PageBlogOverview__cadContentResponseModel? Page { get; set; }
 
     [Inject]
     public required IUmbracoClient UmbracoClient { get; set; }
@@ -69,7 +69,7 @@
     
     private string? ApiUrl { get; set; }
 
-    private ICollection<UmbracoDemo.Client.Models.Pages.BlogDetail> Children { get; set; } = new List<UmbracoDemo.Client.Models.Pages.BlogDetail>();
+    private ICollection<PageBlogDetail__cadContentResponseModel> Children { get; set; } = new List<PageBlogDetail__cadContentResponseModel>();
 
     private SortItem? _currentSort = SortOptions[0];
 
@@ -101,13 +101,13 @@
     }
 
 
-    private UmbracoDemo.Client.Models.Pages.BlogOverview? _previousPage;
+    private PageBlogOverview__cadContentResponseModel? _previousPage;
     private async Task UpdateChildren()
     {
         if (Page == null)
         {
             _previousPage = null;
-            Children = new List<UmbracoDemo.Client.Models.Pages.BlogDetail>();
+            Children = new List<PageBlogDetail__cadContentResponseModel>();
             return;
         }
 
@@ -115,11 +115,11 @@
                 Page.Route.Path,
                 filter: _currentTags.Any() ? new[] { $"tags:{string.Join(',', _currentTags)}" } : null,
                 sort: _currentSort != null ? new[] { $"{_currentSort.SortName}:{_currentSort.SortOrder}" } : null))
-            .OfType<UmbracoDemo.Client.Models.Pages.BlogDetail>().ToList();
+            .OfType<PageBlogDetail__cadContentResponseModel>().ToList();
 
         if (_previousPage != Page)
         {
-            _tags = Children.SelectMany(c => c.Tags ?? Enumerable.Empty<string>()).Distinct().ToList();
+            _tags = Children.SelectMany(c => c.Properties.Tags ?? Enumerable.Empty<string>()).Distinct().ToList();
         }
 
         _previousPage = Page;
