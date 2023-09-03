@@ -1,3 +1,4 @@
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Umbraco.Cms.Api.Common.DependencyInjection;
 using Umbraco.Cms.Core;
 using UmbracoDemo.CMS.Custom.Swagger;
@@ -49,6 +50,20 @@ public class Startup
         services.AddControllers().AddJsonOptions(Constants.JsonOptionsNames.DeliveryApi, options =>
         {
             options.JsonSerializerOptions.TypeInfoResolver = new CustomDeliveryApiJsonTypeResolver();
+        });
+
+        // Enable generation of typed content responses based on CMS content types
+        services.Configure<SwaggerGenOptions>(options =>
+        {
+            options.SupportNonNullableReferenceTypes();
+
+            // UseOneOfForPolymorphism is disabled as we are consuming the swagger with NSwag
+            // If using other code generations tools, like Orval, it should be enabled for better compatibility
+            //options.UseOneOfForPolymorphism();
+
+            options.UseAllOfForInheritance();
+
+            options.SchemaFilter<DeliveryApiContentTypesSchemaFilter>();
         });
     }
 
